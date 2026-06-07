@@ -45,10 +45,6 @@
 
         <form class="filters" method="get">
             <div class="filters__field">
-                <label class="filters__label" for="filter-q">Szukaj</label>
-                <input id="filter-q" type="search" name="q" value="{{ app.request.query.get('q') }}" placeholder="Tytuł gry…">
-            </div>
-            <div class="filters__field">
                 <label class="filters__label" for="filter-category">Kategoria</label>
                 {% set selected_category = app.request.query.get('category') %}
                 <select id="filter-category" name="category">

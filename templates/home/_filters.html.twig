@@ -1,0 +1,24 @@
+<form class="filters"
+      data-action="change->catalog#apply input->catalog#apply submit->catalog#apply">
+    <div class="filters__field">
+        <label class="filters__label" for="filter-category">Kategoria</label>
+        <select id="filter-category" name="category" data-catalog-target="category">
+            <option value="">Wszystkie</option>
+            <option value="strategy">Strategiczne</option>
+            <option value="family">Rodzinne</option>
+            <option value="party">Imprezowe</option>
+            <option value="card">Karciane</option>
+            <option value="coop">Kooperacyjne</option>
+            <option value="economic">Ekonomiczne</option>
+        </select>
+    </div>
+    <div class="filters__field">
+        <label class="filters__label" for="filter-players">Liczba graczy</label>
+        <input id="filter-players" type="number" name="players" min="1" max="12" placeholder="np. 4" data-catalog-target="players">
+    </div>
+    <div class="filters__field">
+        <label class="filters__label" for="filter-time">Maksymalny czas gry (min)</label>
+        <input id="filter-time" type="number" name="maxTime" min="1" placeholder="np. 60" data-catalog-target="time">
+    </div>
+    <button class="filters__clear" type="button" data-action="catalog#clear" data-catalog-target="clear" hidden>Wyczyść</button>
+</form>

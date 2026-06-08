@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{# w panelu nie pokazujemy pływającego przycisku „Panel" — mamy własny navbar #}
+{% block staff_bar %}{% endblock %}
+
+{% block body %}
+<header class="panel-nav">
+    <a class="panel-nav__brand" href="{{ path('app_panel') }}">PIONEK <span>· panel</span></a>
+    <nav class="panel-nav__links">
+        <a href="{{ path('app_panel') }}">Pulpit</a>
+        <a href="{{ path('app_panel_reservations') }}">Rezerwacje</a>
+        <a href="{{ path('app_panel_games') }}">Gry</a>
+    </nav>
+    <div class="panel-nav__user">
+        <a class="panel-nav__home" href="{{ path('app_home') }}">↗ Widok strony</a>
+        <span class="panel-nav__who">{{ app.user.userIdentifier }}</span>
+        <a class="panel-nav__logout" href="{{ path('app_logout') }}">Wyloguj</a>
+    </div>
+</header>
+
+<main class="panel">
+    {% block panel %}{% endblock %}
+</main>
+{% endblock %}

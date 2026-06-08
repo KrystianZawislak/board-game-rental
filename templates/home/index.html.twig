@@ -1,0 +1,108 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div data-controller="homepage"
+     data-homepage-frame-count-value="192"
+     data-homepage-frame-path-value="/frames/frame-%.jpg"
+     data-homepage-reveal-end-value="0.12"
+     data-homepage-scrim-level-value="0.42">
+
+    {# hero: klatki sterowane scrollem + napisy #}
+    <div class="hero" data-homepage-target="track">
+        <div class="hero__stage">
+            <canvas class="hero__canvas" data-homepage-target="canvas"></canvas>
+            <div class="hero__scrim" data-homepage-target="scrim"></div>
+            <div class="hero__vignette" data-homepage-target="vignette"></div>
+
+            <div class="captions">
+                <div class="caption" data-homepage-target="caption"
+                     data-a="0.10" data-b="0.18" data-c="0.30" data-d="0.38">
+                    <span class="caption__kicker">Wypożyczalnia gier planszowych</span>
+                    <span class="caption__title">Setki gier.<br>Jedna półka.</span>
+                </div>
+                <div class="caption" data-homepage-target="caption"
+                     data-a="0.42" data-b="0.50" data-c="0.62" data-d="0.70">
+                    <span class="caption__kicker">Jak to działa</span>
+                    <span class="caption__title">Wybierasz termin —<br>my szykujemy grę.</span>
+                </div>
+                <div class="caption" data-homepage-target="caption"
+                     data-a="0.72" data-b="0.80" data-c="0.86" data-d="0.93">
+                    <span class="caption__kicker">Bez kupowania</span>
+                    <span class="caption__title">Każdy wieczór<br>inna gra.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="checker" aria-hidden="true"></div>
+
+    {# katalog — gry renderowane z backendu (na razie pusty stan) #}
+    <section class="catalog" id="catalog">
+        <header class="catalog__head">
+            <span class="catalog__kicker">Katalog</span>
+            <h2 class="catalog__title">Wybierz grę</h2>
+        </header>
+
+        <form class="filters" method="get">
+            <div class="filters__field">
+                <label class="filters__label" for="filter-category">Kategoria</label>
+                {% set selected_category = app.request.query.get('category') %}
+                <select id="filter-category" name="category">
+                    <option value="">Wszystkie</option>
+                    <option value="strategy" {{ selected_category == 'strategy' ? 'selected' }}>Strategiczna</option>
+                    <option value="family"   {{ selected_category == 'family'   ? 'selected' }}>Rodzinna</option>
+                    <option value="party"    {{ selected_category == 'party'    ? 'selected' }}>Imprezowa</option>
+                    <option value="card"     {{ selected_category == 'card'     ? 'selected' }}>Karciana</option>
+                    <option value="coop"     {{ selected_category == 'coop'     ? 'selected' }}>Kooperacyjna</option>
+                    <option value="economic" {{ selected_category == 'economic' ? 'selected' }}>Ekonomiczna</option>
+                </select>
+            </div>
+            <div class="filters__field">
+                <label class="filters__label" for="filter-players">Liczba graczy</label>
+                <input id="filter-players" type="number" name="players" min="1" max="12" value="{{ app.request.query.get('players') }}" placeholder="np. 4">
+            </div>
+            <div class="filters__field">
+                <label class="filters__label" for="filter-time">Maks. czas (min)</label>
+                <input id="filter-time" type="number" name="maxTime" min="5" step="5" value="{{ app.request.query.get('maxTime') }}" placeholder="np. 60">
+            </div>
+            <button class="filters__submit" type="submit">Filtruj</button>
+        </form>
+
+        <div class="games">
+            {% for game in games|default([]) %}
+                <a class="game-card" href="{{ path('app_game_show', { id: game.id }) }}">
+                    <div class="game-card__thumb"></div>
+                    <div class="game-card__body">
+                        <h3 class="game-card__name">{{ game.title }}</h3>
+                        <ul class="game-card__specs">
+                            <li>{{ game.minPlayers }}–{{ game.maxPlayers }} graczy</li>
+                            <li>{{ game.playingTime }} min</li>
+                            <li>{{ game.category.label }}</li>
+                        </ul>
+                        <span class="game-card__avail game-card__avail--{{ game.currentlyAvailable ? 'free' : 'out' }}">
+                            {{ game.currentlyAvailable ? 'Dostępna' : 'Wypożyczona' }}
+                        </span>
+                    </div>
+                </a>
+            {% else %}
+                <p class="catalog__empty">Brak gier do wyświetlenia.</p>
+            {% endfor %}
+        </div>
+    </section>
+
+    {# intro: czarna nakładka na starcie #}
+    <div class="veil" data-homepage-target="veil">
+        <div class="veil__brand" data-homepage-target="introBrand">
+            <div class="veil__word">PIONEK</div>
+            <div class="veil__tag">Planszówki na wynos</div>
+        </div>
+        <div class="veil__hint" data-homepage-target="introHint">
+            <span>Przewiń</span>
+            <span class="veil__line"></span>
+        </div>
+        <div class="veil__bar-track">
+            <div class="veil__bar" data-homepage-target="bar"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}

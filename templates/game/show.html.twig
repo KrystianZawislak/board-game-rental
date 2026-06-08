@@ -24,10 +24,19 @@
 
             <p class="game-page__desc">{{ game.description }}</p>
 
-            {# rezerwacja dojdzie na branchu reservations #}
-            <button class="game-page__reserve" type="button" {{ game.currentlyAvailable ? '' : 'disabled' }}>
-                Zarezerwuj
-            </button>
+            {% set bookings = game.upcomingReservations %}
+            {% if bookings is not empty %}
+                <div class="game-page__booked">
+                    <span class="game-page__booked-title">Zajęte terminy</span>
+                    <ul>
+                        {% for r in bookings %}
+                            <li>{{ r.startDate|date('d.m.Y') }} &ndash; {{ r.endDate|date('d.m.Y') }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+            <a class="game-page__reserve" href="{{ path('app_reservation_new', { id: game.id }) }}">Zarezerwuj na wolny termin</a>
         </div>
     </div>
 </main>

@@ -185,21 +185,50 @@ class Game
     }
 
     /**
-     * Jeden egzemplarz: gra jest dostępna, gdy nie ma żadnej aktywnej rezerwacji.
-     * Aktywna = oczekująca, potwierdzona lub wydana. Zwrócona (RETURNED) zwalnia grę.
+     * Czy gra jest wolna DZIŚ (model kalendarzowy — rezerwacja w przyszłości nie blokuje dnia dzisiejszego):
+     *  - wydana (ISSUED) i niezwrócona = nie ma jej teraz,
+     *  - zgłoszona/potwierdzona, której okres obejmuje dzisiejszą datę = zajęta dziś.
      */
     public function isCurrentlyAvailable(): bool
     {
+        $today = new \DateTimeImmutable('today');
+
         foreach ($this->reservations as $reservation) {
-            if (\in_array($reservation->getStatus(), [
-                ReservationStatus::PENDING,
-                ReservationStatus::CONFIRMED,
-                ReservationStatus::ISSUED,
-            ], true)) {
+            $status = $reservation->getStatus();
+
+            if ($status === ReservationStatus::ISSUED) {
+                return false;
+            }
+
+            if (($status === ReservationStatus::PENDING || $status === ReservationStatus::CONFIRMED)
+                && $reservation->getStartDate() <= $today
+                && $reservation->getEndDate() >= $today
+            ) {
                 return false;
             }
         }
 
         return true;
+    }
+
+    /**
+     * Aktywne rezerwacje, których termin jeszcze się nie skończył — do pokazania
+     * listy zajętych terminów na stronie gry (bez danych osobowych). Posortowane od najbliższej.
+     *
+     * @return Reservation[]
+     */
+    public function getUpcomingReservations(): array
+    {
+        $today = new \DateTimeImmutable('today');
+
+        $upcoming = array_filter(
+            $this->reservations->toArray(),
+            static fn (Reservation $r): bool => $r->getStatus() !== ReservationStatus::RETURNED
+                && $r->getEndDate() >= $today,
+        );
+
+        usort($upcoming, static fn (Reservation $a, Reservation $b): int => $a->getStartDate() <=> $b->getStartDate());
+
+        return $upcoming;
     }
 }

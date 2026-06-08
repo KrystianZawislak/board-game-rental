@@ -15,12 +15,12 @@
         <tbody>
             {% for r in reservations %}
                 <tr>
-                    <td>{{ r.game.title }}</td>
-                    <td>{{ r.startDate|date('d.m.Y') }} &ndash; {{ r.endDate|date('d.m.Y') }}</td>
-                    <td>{{ r.guestName }}</td>
-                    <td>{{ r.guestPhone }}</td>
-                    <td><span class="badge badge--{{ r.status.value }}">{{ r.status.label }}</span></td>
-                    <td>
+                    <td data-label="Gra">{{ r.game.title }}</td>
+                    <td data-label="Termin">{{ r.startDate|date('d.m.Y') }} &ndash; {{ r.endDate|date('d.m.Y') }}</td>
+                    <td data-label="Gość">{{ r.guestName }}</td>
+                    <td data-label="Telefon">{{ r.guestPhone }}</td>
+                    <td data-label="Status"><span class="badge badge--{{ r.status.value }}">{{ r.status.label }}</span></td>
+                    <td data-label="Akcje">
                         <div class="panel-actions">
                             {% if r.status.value == 'pending' %}
                                 <form method="post" action="{{ path('app_panel_reservation_confirm', {id: r.id}) }}">

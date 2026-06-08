@@ -15,11 +15,11 @@
     <tbody>
         {% for game in games %}
             <tr>
-                <td>{{ game.title }}</td>
-                <td>{{ game.category.label }}</td>
-                <td>{{ game.minPlayers }}&ndash;{{ game.maxPlayers }}</td>
-                <td>{{ game.playingTime }} min</td>
-                <td>
+                <td data-label="Tytuł">{{ game.title }}</td>
+                <td data-label="Kategoria">{{ game.category.label }}</td>
+                <td data-label="Gracze">{{ game.minPlayers }}&ndash;{{ game.maxPlayers }}</td>
+                <td data-label="Czas">{{ game.playingTime }} min</td>
+                <td data-label="Akcje">
                     <div class="panel-actions">
                         <a class="btn" href="{{ path('app_panel_game_edit', {id: game.id}) }}">Edytuj</a>
                         {% if is_granted('ROLE_MANAGER') %}

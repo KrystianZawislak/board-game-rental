@@ -5,7 +5,10 @@ export default class extends Controller {
     static values = { delay: { type: Number, default: 4000 } };
 
     connect() {
-        this.timer = window.setTimeout(() => this.dismiss(), this.delayValue);
+        // na telefonie komunikat znika o połowę szybciej
+        const mobile = window.matchMedia('(max-width: 600px)').matches;
+        const delay = mobile ? this.delayValue / 2 : this.delayValue;
+        this.timer = window.setTimeout(() => this.dismiss(), delay);
     }
 
     disconnect() {

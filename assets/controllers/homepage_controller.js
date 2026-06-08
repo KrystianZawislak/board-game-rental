@@ -69,6 +69,8 @@ export default class extends Controller {
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
         this.canvasTarget.width = Math.round(this.canvasTarget.clientWidth * dpr);
         this.canvasTarget.height = Math.round(this.canvasTarget.clientHeight * dpr);
+        // telefon: klatki wypełniają cały ekran (cover); desktop: mieszczą się w całości (contain)
+        this.cover = window.matchMedia('(max-width: 600px)').matches;
         this.currentIndex = -1;
         if (this.ready) this.draw(this.lastProgress);
     }
@@ -86,7 +88,8 @@ export default class extends Controller {
         this.currentIndex = index;
 
         const { width, height } = this.canvasTarget;
-        const scale = Math.min(width / image.naturalWidth, height / image.naturalHeight);
+        const fit = this.cover ? Math.max : Math.min; // cover wypełnia kadr, contain mieści w całości
+        const scale = fit(width / image.naturalWidth, height / image.naturalHeight);
         const w = image.naturalWidth * scale;
         const h = image.naturalHeight * scale;
 

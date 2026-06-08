@@ -33,10 +33,10 @@
             <tbody>
                 {% for r in pending %}
                     <tr>
-                        <td>{{ r.game.title }}</td>
-                        <td>{{ r.startDate|date('d.m.Y') }} &ndash; {{ r.endDate|date('d.m.Y') }}</td>
-                        <td>{{ r.guestName }}</td>
-                        <td>{{ r.guestPhone }}</td>
+                        <td data-label="Gra">{{ r.game.title }}</td>
+                        <td data-label="Termin">{{ r.startDate|date('d.m.Y') }} &ndash; {{ r.endDate|date('d.m.Y') }}</td>
+                        <td data-label="Gość">{{ r.guestName }}</td>
+                        <td data-label="Telefon">{{ r.guestPhone }}</td>
                     </tr>
                 {% endfor %}
             </tbody>

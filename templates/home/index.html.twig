@@ -36,58 +36,38 @@
 
     <div class="checker" aria-hidden="true"></div>
 
-    {# katalog — gry renderowane z backendu (na razie pusty stan) #}
-    <section class="catalog" id="catalog">
+    {# katalog — wiersze wg kategorii; filtrowanie w miejscu (JS), wyniki renderują się pod filtrami #}
+    <section class="catalog" id="catalog" data-controller="catalog">
         <header class="catalog__head">
             <span class="catalog__kicker">Katalog</span>
             <h2 class="catalog__title">Wybierz grę</h2>
         </header>
 
-        <form class="filters" method="get">
-            <div class="filters__field">
-                <label class="filters__label" for="filter-category">Kategoria</label>
-                {% set selected_category = app.request.query.get('category') %}
-                <select id="filter-category" name="category">
-                    <option value="">Wszystkie</option>
-                    <option value="strategy" {{ selected_category == 'strategy' ? 'selected' }}>Strategiczna</option>
-                    <option value="family"   {{ selected_category == 'family'   ? 'selected' }}>Rodzinna</option>
-                    <option value="party"    {{ selected_category == 'party'    ? 'selected' }}>Imprezowa</option>
-                    <option value="card"     {{ selected_category == 'card'     ? 'selected' }}>Karciana</option>
-                    <option value="coop"     {{ selected_category == 'coop'     ? 'selected' }}>Kooperacyjna</option>
-                    <option value="economic" {{ selected_category == 'economic' ? 'selected' }}>Ekonomiczna</option>
-                </select>
-            </div>
-            <div class="filters__field">
-                <label class="filters__label" for="filter-players">Liczba graczy</label>
-                <input id="filter-players" type="number" name="players" min="1" max="12" value="{{ app.request.query.get('players') }}" placeholder="np. 4">
-            </div>
-            <div class="filters__field">
-                <label class="filters__label" for="filter-time">Maks. czas (min)</label>
-                <input id="filter-time" type="number" name="maxTime" min="5" step="5" value="{{ app.request.query.get('maxTime') }}" placeholder="np. 60">
-            </div>
-            <button class="filters__submit" type="submit">Filtruj</button>
-        </form>
+        {{ include('home/_filters.html.twig') }}
 
-        <div class="games">
-            {% for game in games|default([]) %}
-                <a class="game-card" href="{{ path('app_game_show', { id: game.id }) }}">
-                    <div class="game-card__thumb"></div>
-                    <div class="game-card__body">
-                        <h3 class="game-card__name">{{ game.title }}</h3>
-                        <ul class="game-card__specs">
-                            <li>{{ game.minPlayers }}–{{ game.maxPlayers }} graczy</li>
-                            <li>{{ game.playingTime }} min</li>
-                            <li>{{ game.category.label }}</li>
-                        </ul>
-                        <span class="game-card__avail game-card__avail--{{ game.currentlyAvailable ? 'free' : 'out' }}">
-                            {{ game.currentlyAvailable ? 'Dostępna' : 'Wypożyczona' }}
-                        </span>
+        {# domyślny widok: wiersze „Netflix" #}
+        <div class="catalog__rows" data-catalog-target="rows">
+            {% for row in rows %}
+                <div class="row" data-controller="carousel">
+                    <h3 class="row__title">{{ row.category.label }}</h3>
+                    <div class="row__viewport">
+                        <button class="row__arrow row__arrow--prev" type="button"
+                                data-action="carousel#prev" data-carousel-target="prev" aria-label="Przewiń w lewo">‹</button>
+                        <div class="row__track" data-carousel-target="track">
+                            {% for game in row.games %}
+                                {{ include('home/_card.html.twig', { game: game }) }}
+                            {% endfor %}
+                        </div>
+                        <button class="row__arrow row__arrow--next" type="button"
+                                data-action="carousel#next" data-carousel-target="next" aria-label="Przewiń w prawo">›</button>
                     </div>
-                </a>
-            {% else %}
-                <p class="catalog__empty">Brak gier do wyświetlenia.</p>
+                </div>
             {% endfor %}
         </div>
+
+        {# widok po filtrze: płaska siatka pasujących gier (wypełniana przez JS) #}
+        <div class="games" data-catalog-target="results" hidden></div>
+        <p class="catalog__empty" data-catalog-target="empty" hidden>Brak gier spełniających wybrane kryteria.</p>
     </section>
 
     {# intro: czarna nakładka na starcie #}

@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ game.title }} — Pionek{% endblock %}
+
+{% block body %}
+<main class="game-page">
+    <a class="game-page__back" href="{{ path('app_home') }}#catalog">← Wróć do katalogu</a>
+
+    <div class="game-page__inner">
+        <div class="game-page__cover"></div>
+
+        <div class="game-page__info">
+            <span class="game-page__category">{{ game.category.label }}</span>
+            <h1 class="game-page__title">{{ game.title }}</h1>
+
+            <ul class="game-page__specs">
+                <li><span>Gracze</span>{{ game.minPlayers }}–{{ game.maxPlayers }}</li>
+                <li><span>Czas gry</span>{{ game.playingTime }} min</li>
+            </ul>
+
+            <span class="game-page__avail game-page__avail--{{ game.currentlyAvailable ? 'free' : 'out' }}">
+                {{ game.currentlyAvailable ? 'Dostępna do wypożyczenia' : 'Obecnie niedostępna' }}
+            </span>
+
+            <p class="game-page__desc">{{ game.description }}</p>
+
+            {# rezerwacja dojdzie na branchu reservations #}
+            <button class="game-page__reserve" type="button" {{ game.currentlyAvailable ? '' : 'disabled' }}>
+                Zarezerwuj
+            </button>
+        </div>
+    </div>
+</main>
+{% endblock %}

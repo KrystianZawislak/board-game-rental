@@ -16,28 +16,18 @@ class GameRepository extends ServiceEntityRepository
         parent::__construct($registry, Game::class);
     }
 
-    //    /**
-    //     * @return Game[] Returns an array of Game objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('g')
-    //            ->andWhere('g.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('g.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?Game
-    //    {
-    //        return $this->createQueryBuilder('g')
-    //            ->andWhere('g.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    /**
+     * Wszystkie gry wraz z rezerwacjami (eager load), żeby sprawdzanie dostępności
+     * w widoku nie generowało osobnego zapytania na każdą grę (uniknięcie N+1).
+     *
+     * @return Game[]
+     */
+    public function findAllWithReservations(): array
+    {
+        return $this->createQueryBuilder('g')
+            ->leftJoin('g.reservations', 'r')->addSelect('r')
+            ->orderBy('g.title', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

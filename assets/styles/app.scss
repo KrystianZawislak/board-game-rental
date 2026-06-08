@@ -172,10 +172,9 @@ html, body {
     }
 
     input,
-    select,
-    &__submit {
+    select {
         appearance: none;
-        height: 46px;          // jednolita wysokość wszystkich pól
+        height: 46px;          // jednolita wysokość pól
         box-sizing: border-box;
         min-width: 160px;
         border-radius: 6px;
@@ -211,19 +210,6 @@ html, body {
         &::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
     }
 
-    &__submit {
-        min-width: 0;
-        padding: 0 26px;
-        border: 0;
-        cursor: pointer;
-        color: #000;
-        background: #fff;
-        letter-spacing: .16em;
-        text-transform: uppercase;
-        transition: opacity .25s;
-
-        &:hover { opacity: .85; }
-    }
 }
 
 // --- siatka gier ---
@@ -363,5 +349,183 @@ html, body {
         width: 0;
         background: rgba(255, 255, 255, .85);
         transition: width .2s linear;
+    }
+}
+
+// --- katalog: wiersze „Netflix" ---
+.row {
+    max-width: 1200px;
+    margin: 0 auto 44px;
+
+    &__title {
+        margin: 0 0 14px;
+        padding-left: 52px;                       // równo z wciętym torem kart
+        font-size: clamp(18px, 2.4vmin, 24px);
+        font-weight: 500;
+    }
+    &__viewport {
+        position: relative;
+        padding: 0 52px;                          // rynny po bokach na strzałki (nie nachodzą na karty)
+    }
+    &__track {
+        display: flex;
+        gap: 18px;
+        padding: 10px 0;                          // miejsce na unoszenie karty przy hover (tor przycina w pionie)
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scroll-behavior: smooth;
+        scrollbar-width: none;                    // Firefox
+
+        &::-webkit-scrollbar { display: none; }   // WebKit
+
+        > .game-card {
+            flex: 0 0 calc((100% - 72px) / 5);    // równo 5 całych kart w widoku (4 odstępy po 18px)
+            scroll-snap-align: start;
+        }
+    }
+    &__arrow {
+        position: absolute;
+        top: 50%;
+        z-index: 2;
+        transform: translateY(-50%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border: 1px solid $hair;
+        border-radius: 50%;
+        background: rgba(12, 12, 12, .9);
+        color: $ink;
+        font-size: 20px;
+        line-height: 1;
+        cursor: pointer;
+        opacity: 0;                               // domyślnie ukryte, dopóki kontroler nie ożywi wiersza
+        pointer-events: none;
+        transition: opacity .2s, background .25s;
+
+        &--prev { left: 4px; }
+        &--next { right: 4px; }
+        &:hover { background: rgba(255, 255, 255, .14); }
+    }
+
+    // pokaż tylko działającą strzałkę, gdy kontroler podłączony (klasa is-ready)
+    &.is-ready &__arrow:not(:disabled) {
+        opacity: 1;
+        pointer-events: auto;
+    }
+}
+
+// --- filtry: przycisk „Wyczyść" ---
+.filters__clear {
+    align-self: center;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    color: $muted;
+    font: inherit;
+    font-size: 13px;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+
+    &:hover { color: $ink; }
+}
+
+// --- strona pojedynczej gry ---
+.game-page {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 48px 6vw 14vh;
+
+    &__back {
+        display: inline-block;
+        margin-bottom: 32px;
+        color: $muted;
+        font-size: 14px;
+        text-decoration: none;
+
+        &:hover { color: $ink; }
+    }
+    &__inner {
+        display: grid;
+        grid-template-columns: minmax(220px, 360px) 1fr;
+        gap: 40px;
+        align-items: start;
+    }
+    &__cover {
+        aspect-ratio: 3 / 4;
+        border: 1px solid $hair;
+        border-radius: 10px;
+        background: repeating-linear-gradient(45deg, rgba(255,255,255,.04) 0 14px, transparent 14px 28px);
+    }
+    &__category {
+        font-size: 12px;
+        letter-spacing: .22em;
+        text-transform: uppercase;
+        color: $muted;
+    }
+    &__title {
+        margin: 10px 0 24px;
+        font-size: clamp(36px, 6vmin, 64px);
+        font-weight: 400;
+        line-height: 1.05;
+    }
+    &__specs {
+        display: flex;
+        gap: 40px;
+        margin: 0 0 24px;
+        padding: 0;
+        list-style: none;
+        font-family: $sans;
+
+        li {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 18px;
+        }
+        span {
+            font-size: 11px;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: $muted;
+        }
+    }
+    &__avail {
+        display: inline-block;
+        margin-bottom: 28px;
+        padding: 7px 14px;
+        border: 1px solid $hair;
+        border-radius: 999px;
+        font-family: $sans;
+        font-size: 11px;
+        letter-spacing: .18em;
+        text-transform: uppercase;
+
+        &--free { color: #bff3c8; border-color: rgba(120, 230, 150, .4); }
+        &--out  { color: #f3c2c2; border-color: rgba(230, 120, 120, .4); }
+    }
+    &__desc {
+        max-width: 60ch;
+        margin: 0 0 32px;
+        color: rgba(255, 255, 255, .8);
+        font-size: clamp(17px, 2vmin, 20px);
+        line-height: 1.6;
+    }
+    &__reserve {
+        padding: 14px 34px;
+        border: 0;
+        border-radius: 6px;
+        background: #fff;
+        color: #000;
+        font-family: $sans;
+        font-size: 13px;
+        letter-spacing: .14em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: opacity .25s;
+
+        &:hover { opacity: .85; }
+        &:disabled { opacity: .35; cursor: not-allowed; }
     }
 }

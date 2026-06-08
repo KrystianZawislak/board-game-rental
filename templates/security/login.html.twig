@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Logowanie — Pionek{% endblock %}
+
+{% block body %}
+<main class="login">
+    <form class="login__form" method="post">
+        <span class="login__kicker">Pionek</span>
+        <h1 class="login__title">Panel personelu</h1>
+
+        {% if error %}
+            <p class="login__error">{{ error.messageKey|trans(error.messageData, 'security') }}</p>
+        {% endif %}
+
+        <label class="login__label" for="username">E-mail</label>
+        <input class="login__input" type="email" id="username" name="_username"
+               value="{{ last_username }}" autocomplete="email" required autofocus>
+
+        <label class="login__label" for="password">Hasło</label>
+        <input class="login__input" type="password" id="password" name="_password"
+               autocomplete="current-password" required>
+
+        <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
+
+        <button class="login__submit" type="submit">Zaloguj</button>
+    </form>
+</main>
+{% endblock %}

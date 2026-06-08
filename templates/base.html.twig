@@ -19,9 +19,15 @@
     <body>
         {% for type, messages in app.flashes %}
             {% for message in messages %}
-                <div class="flash flash--{{ type }}">{{ message }}</div>
+                <div class="flash flash--{{ type }}" data-controller="flash">{{ message }}</div>
             {% endfor %}
         {% endfor %}
+
+        {% block staff_bar %}
+            {% if is_granted('ROLE_STAFF') %}
+                <a class="staff-link" href="{{ path('app_panel') }}">Panel</a>
+            {% endif %}
+        {% endblock %}
 
         {% block body %}{% endblock %}
     </body>

@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: GameRepository::class)]
 class Game
@@ -19,24 +20,35 @@ class Game
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Podaj tytuł gry.')]
+    #[Assert\Length(max: 255)]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank(message: 'Podaj opis gry.')]
     private ?string $description = null;
 
     #[ORM\Column]
+    #[Assert\NotNull(message: 'Podaj minimalną liczbę graczy.')]
+    #[Assert\Positive(message: 'Liczba graczy musi być dodatnia.')]
     private ?int $minPlayers = null;
 
     #[ORM\Column]
+    #[Assert\NotNull(message: 'Podaj maksymalną liczbę graczy.')]
+    #[Assert\Positive(message: 'Liczba graczy musi być dodatnia.')]
+    #[Assert\GreaterThanOrEqual(propertyPath: 'minPlayers', message: 'Maks. graczy nie może być mniejsze niż min.')]
     private ?int $maxPlayers = null;
 
     #[ORM\Column]
+    #[Assert\NotNull(message: 'Podaj czas gry.')]
+    #[Assert\Positive(message: 'Czas gry musi być dodatni.')]
     private ?int $playingTime = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $imageName = null;
 
     #[ORM\Column(enumType: GameCategory::class)]
+    #[Assert\NotNull(message: 'Wybierz kategorię.')]
     private ?GameCategory $category = null;
 
     #[ORM\Column]
@@ -45,7 +57,7 @@ class Game
     /**
      * @var Collection<int, Reservation>
      */
-    #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'game')]
+    #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'game', cascade: ['remove'])]
     private Collection $reservations;
 
     public function __construct()
@@ -230,5 +242,20 @@ class Game
         usort($upcoming, static fn (Reservation $a, Reservation $b): int => $a->getStartDate() <=> $b->getStartDate());
 
         return $upcoming;
+    }
+
+    /**
+     * Czy gra ma aktywną rezerwację (oczekującą, potwierdzoną lub wydaną).
+     * Zwrócone (RETURNED) to już zamknięta historia — nie liczą się.
+     */
+    public function hasActiveReservations(): bool
+    {
+        foreach ($this->reservations as $reservation) {
+            if ($reservation->getStatus() !== ReservationStatus::RETURNED) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

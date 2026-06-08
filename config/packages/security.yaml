@@ -20,17 +20,20 @@ security:
         main:
             lazy: true
             provider: app_user_provider
+            form_login:
+                login_path: app_login
+                check_path: app_login
+                enable_csrf: true
+            logout:
+                path: app_logout
 
-            # Activate different ways to authenticate:
-            # https://symfony.com/doc/current/security.html#the-firewall
+    # manager ma wszystkie uprawnienia pracownika + swoje
+    role_hierarchy:
+        ROLE_MANAGER: [ROLE_STAFF]
 
-            # https://symfony.com/doc/current/security/impersonating_user.html
-            # switch_user: true
-
-    # Note: Only the *first* matching rule is applied
+    # tylko zalogowany personel wejdzie do panelu
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/panel, roles: ROLE_STAFF }
 
 when@test:
     security:

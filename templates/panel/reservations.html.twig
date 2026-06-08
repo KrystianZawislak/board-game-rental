@@ -1,0 +1,52 @@
+{% extends 'panel/base.html.twig' %}
+
+{% block title %}Rezerwacje — Panel{% endblock %}
+
+{% block panel %}
+<h1 class="panel__title">Rezerwacje</h1>
+
+{% if reservations is empty %}
+    <p class="panel-list__empty">Brak aktywnych rezerwacji.</p>
+{% else %}
+    <table class="panel-table">
+        <thead>
+            <tr><th>Gra</th><th>Termin</th><th>Gość</th><th>Telefon</th><th>Status</th><th>Akcje</th></tr>
+        </thead>
+        <tbody>
+            {% for r in reservations %}
+                <tr>
+                    <td>{{ r.game.title }}</td>
+                    <td>{{ r.startDate|date('d.m.Y') }} &ndash; {{ r.endDate|date('d.m.Y') }}</td>
+                    <td>{{ r.guestName }}</td>
+                    <td>{{ r.guestPhone }}</td>
+                    <td><span class="badge badge--{{ r.status.value }}">{{ r.status.label }}</span></td>
+                    <td>
+                        <div class="panel-actions">
+                            {% if r.status.value == 'pending' %}
+                                <form method="post" action="{{ path('app_panel_reservation_confirm', {id: r.id}) }}">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('panel-reservation') }}">
+                                    <button class="btn btn--ok" type="submit">Potwierdź</button>
+                                </form>
+                                <form method="post" action="{{ path('app_panel_reservation_reject', {id: r.id}) }}">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('panel-reservation') }}">
+                                    <button class="btn btn--no" type="submit">Odrzuć</button>
+                                </form>
+                            {% elseif r.status.value == 'confirmed' %}
+                                <form method="post" action="{{ path('app_panel_reservation_issue', {id: r.id}) }}">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('panel-reservation') }}">
+                                    <button class="btn" type="submit">Wydaj</button>
+                                </form>
+                            {% elseif r.status.value == 'issued' %}
+                                <form method="post" action="{{ path('app_panel_reservation_return', {id: r.id}) }}">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('panel-reservation') }}">
+                                    <button class="btn" type="submit">Zwróć</button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+{% endblock %}

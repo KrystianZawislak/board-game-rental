@@ -37,4 +37,19 @@ class ReservationRepository extends ServiceEntityRepository
 
         return $count > 0;
     }
+
+    /**
+     * Aktywne rezerwacje do obsługi w panelu (bez zwróconych), z dołączoną grą, posortowane wg terminu.
+     *
+     * @return Reservation[]
+     */
+    public function findActive(): array
+    {
+        return $this->createQueryBuilder('r')
+            ->andWhere('r.status != :returned')->setParameter('returned', ReservationStatus::RETURNED)
+            ->leftJoin('r.game', 'g')->addSelect('g')
+            ->orderBy('r.startDate', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

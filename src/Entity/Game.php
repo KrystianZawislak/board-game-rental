@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Enum\GameCategory;
+use App\Enum\ReservationStatus;
 use App\Repository\GameRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -181,5 +182,24 @@ class Game
         }
 
         return $this;
+    }
+
+    /**
+     * Jeden egzemplarz: gra jest dostępna, gdy nie ma żadnej aktywnej rezerwacji.
+     * Aktywna = oczekująca, potwierdzona lub wydana. Zwrócona (RETURNED) zwalnia grę.
+     */
+    public function isCurrentlyAvailable(): bool
+    {
+        foreach ($this->reservations as $reservation) {
+            if (\in_array($reservation->getStatus(), [
+                ReservationStatus::PENDING,
+                ReservationStatus::CONFIRMED,
+                ReservationStatus::ISSUED,
+            ], true)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

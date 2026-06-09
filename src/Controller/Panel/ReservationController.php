@@ -6,6 +6,7 @@ use App\Entity\Reservation;
 use App\Enum\ReservationStatus;
 use App\Repository\ReservationRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,6 +17,11 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_STAFF')]
 final class ReservationController extends AbstractController
 {
+    public function __construct(
+        private readonly LoggerInterface $auditLogger,
+    ) {
+    }
+
     #[Route('', name: 'app_panel_reservations', methods: ['GET'])]
     public function index(ReservationRepository $reservations): Response
     {
@@ -65,6 +71,14 @@ final class ReservationController extends AbstractController
         } else {
             $reservation->setStatus($to);
             $em->flush();
+
+            $this->auditLogger->info('Zmiana stanu rezerwacji', [
+                'reservationId' => $reservation->getId(),
+                'from' => $from->value,
+                'to' => $to->value,
+                'by' => $this->getUser()?->getUserIdentifier(),
+            ]);
+
             $this->addFlash('success', $message);
         }
 

@@ -13,6 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\RateLimiter\RateLimiterFactory;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class ReservationController extends AbstractController
@@ -23,36 +24,42 @@ final class ReservationController extends AbstractController
         Request $request,
         EntityManagerInterface $em,
         ReservationRepository $reservations,
+        RateLimiterFactory $reservationLimiter,
     ): Response {
         $reservation = new Reservation();
         $form = $this->createForm(ReservationType::class, $reservation);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            // Blokada wiersza gry (SELECT ... FOR UPDATE) serializuje równoległe rezerwacje tej samej
-            // gry: bez niej dwa zgłoszenia mogłyby oba przejść sprawdzenie kolizji i oba się zapisać (TOCTOU).
-            $taken = $em->wrapInTransaction(function () use ($em, $game, $reservation, $reservations): bool {
-                $em->lock($game, LockMode::PESSIMISTIC_WRITE);
+        if ($form->isSubmitted()) {
+            if (!$reservationLimiter->create($request->getClientIp() ?? '')->consume()->isAccepted()) {
+                // za dużo zgłoszeń z jednego IP — ochrona przed spamem rezerwacjami
+                $form->addError(new FormError('Zbyt wiele prób rezerwacji z tego adresu. Spróbuj ponownie za chwilę.'));
+            } elseif ($form->isValid()) {
+                // Blokada wiersza gry (SELECT ... FOR UPDATE) serializuje równoległe rezerwacje tej samej
+                // gry: bez niej dwa zgłoszenia mogłyby oba przejść sprawdzenie kolizji i oba się zapisać (TOCTOU).
+                $taken = $em->wrapInTransaction(function () use ($em, $game, $reservation, $reservations): bool {
+                    $em->lock($game, LockMode::PESSIMISTIC_WRITE);
 
-                if ($reservations->overlaps($game, $reservation->getStartDate(), $reservation->getEndDate())) {
-                    return true;
+                    if ($reservations->overlaps($game, $reservation->getStartDate(), $reservation->getEndDate())) {
+                        return true;
+                    }
+
+                    // wartości narzucone serwerowo — celowo NIE pochodzą z formularza
+                    $reservation->setGame($game);
+                    $reservation->setStatus(ReservationStatus::PENDING);
+                    $reservation->setCreatedAt(new \DateTimeImmutable());
+                    $em->persist($reservation);
+
+                    return false;
+                });
+
+                if ($taken) {
+                    $form->addError(new FormError('Wybrany termin jest już zajęty — wybierz inny.'));
+                } else {
+                    $this->addFlash('success', 'Zgłoszenie rezerwacji przyjęte — skontaktujemy się z Tobą.');
+
+                    return $this->redirectToRoute('app_game_show', ['id' => $game->getId()]);
                 }
-
-                // wartości narzucone serwerowo — celowo NIE pochodzą z formularza
-                $reservation->setGame($game);
-                $reservation->setStatus(ReservationStatus::PENDING);
-                $reservation->setCreatedAt(new \DateTimeImmutable());
-                $em->persist($reservation);
-
-                return false;
-            });
-
-            if ($taken) {
-                $form->addError(new FormError('Wybrany termin jest już zajęty — wybierz inny.'));
-            } else {
-                $this->addFlash('success', 'Zgłoszenie rezerwacji przyjęte — skontaktujemy się z Tobą.');
-
-                return $this->redirectToRoute('app_game_show', ['id' => $game->getId()]);
             }
         }
 

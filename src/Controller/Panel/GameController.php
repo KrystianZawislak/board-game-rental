@@ -6,6 +6,7 @@ use App\Entity\Game;
 use App\Form\GameType;
 use App\Repository\GameRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -67,7 +68,7 @@ final class GameController extends AbstractController
 
     #[Route('/{id}/delete', name: 'app_panel_game_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')] // trwałe usunięcie tylko dla managera
-    public function delete(Game $game, Request $request, EntityManagerInterface $em): Response
+    public function delete(Game $game, Request $request, EntityManagerInterface $em, LoggerInterface $auditLogger): Response
     {
         if (!$this->isCsrfTokenValid('panel-game-delete', (string) $request->request->get('_token'))) {
             throw $this->createAccessDeniedException('Nieprawidłowy token CSRF.');
@@ -80,6 +81,12 @@ final class GameController extends AbstractController
         }
 
         // gra bez aktywnych rezerwacji — kasujemy ją wraz z historią (zwrócone rezerwacje, cascade remove)
+        $auditLogger->info('Gra usunięta', [
+            'gameId' => $game->getId(),
+            'title' => $game->getTitle(),
+            'by' => $this->getUser()?->getUserIdentifier(),
+        ]);
+
         $em->remove($game);
         $em->flush();
         $this->addFlash('success', 'Gra usunięta.');

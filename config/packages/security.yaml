@@ -24,6 +24,9 @@ security:
                 login_path: app_login
                 check_path: app_login
                 enable_csrf: true
+            # ochrona przed brute-force: po 5 nieudanych próbach logowanie jest chwilowo blokowane
+            login_throttling:
+                max_attempts: 5
             logout:
                 path: app_logout
 

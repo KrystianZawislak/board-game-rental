@@ -7,6 +7,7 @@ use App\Entity\Reservation;
 use App\Enum\ReservationStatus;
 use App\Form\ReservationType;
 use App\Repository\ReservationRepository;
+use Doctrine\DBAL\LockMode;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
@@ -28,18 +29,27 @@ final class ReservationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // wybrany termin nie może kolidować z inną aktywną rezerwacją (sprawdzane serwerowo)
-            if ($reservations->overlaps($game, $reservation->getStartDate(), $reservation->getEndDate())) {
-                $form->addError(new FormError('Wybrany termin jest już zajęty — wybierz inny.'));
-            } else {
+            // Blokada wiersza gry (SELECT ... FOR UPDATE) serializuje równoległe rezerwacje tej samej
+            // gry: bez niej dwa zgłoszenia mogłyby oba przejść sprawdzenie kolizji i oba się zapisać (TOCTOU).
+            $taken = $em->wrapInTransaction(function () use ($em, $game, $reservation, $reservations): bool {
+                $em->lock($game, LockMode::PESSIMISTIC_WRITE);
+
+                if ($reservations->overlaps($game, $reservation->getStartDate(), $reservation->getEndDate())) {
+                    return true;
+                }
+
                 // wartości narzucone serwerowo — celowo NIE pochodzą z formularza
                 $reservation->setGame($game);
                 $reservation->setStatus(ReservationStatus::PENDING);
                 $reservation->setCreatedAt(new \DateTimeImmutable());
-
                 $em->persist($reservation);
-                $em->flush();
 
+                return false;
+            });
+
+            if ($taken) {
+                $form->addError(new FormError('Wybrany termin jest już zajęty — wybierz inny.'));
+            } else {
                 $this->addFlash('success', 'Zgłoszenie rezerwacji przyjęte — skontaktujemy się z Tobą.');
 
                 return $this->redirectToRoute('app_game_show', ['id' => $game->getId()]);

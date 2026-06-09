@@ -1,0 +1,32 @@
+@use 'tokens' as *;
+
+// komunikaty (flash) — na desktopie u góry, na telefonie u dołu
+.flash {
+    position: fixed;
+    top: 18px;
+    left: 50%;
+    z-index: 200;
+    transform: translateX(-50%);
+    max-width: 90vw;
+    padding: 12px 22px;
+    border: 1px solid $hair;
+    border-radius: 8px;
+    background: #16181f;
+    font-family: $sans;
+    font-size: 14px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .5);
+    transition: opacity .4s ease, transform .4s ease;
+
+    &--success { border-color: rgba(120, 230, 150, .5); color: #bff3c8; }
+    &--warning { border-color: rgba(230, 200, 120, .5); color: #f3e3bf; }
+    &--hide { opacity: 0; transform: translateX(-50%) translateY(-12px); }
+}
+
+@media (max-width: $bp-sm) {
+    .flash {
+        top: auto;
+        bottom: 34px;
+
+        &--hide { transform: translateX(-50%) translateY(12px); } // zsuwa się w dół
+    }
+}

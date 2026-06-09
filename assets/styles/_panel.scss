@@ -1,0 +1,289 @@
+@use 'tokens' as *;
+
+// górny pasek panelu
+.panel-nav {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    padding: 16px 6vw;
+    border-bottom: 1px solid $hair;
+    font-family: $sans;
+
+    &__brand {
+        font-family: $serif;
+        font-size: 18px;
+        letter-spacing: .18em;
+        color: $ink;
+        text-decoration: none;
+
+        span { color: $muted; }
+    }
+    &__links {
+        display: flex;
+        gap: 18px;
+
+        a {
+            color: $muted;
+            font-size: 14px;
+            text-decoration: none;
+
+            &:hover { color: $ink; }
+        }
+    }
+    &__user {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        font-size: 13px;
+    }
+    &__home {
+        color: $muted;
+        font-size: 13px;
+        text-decoration: none;
+
+        &:hover { color: $ink; }
+    }
+    &__who { color: $muted; }
+    &__logout {
+        color: $ink;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+
+        &:hover { color: $muted; }
+    }
+}
+
+// treść panelu
+.panel {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 6vw 14vh;
+    font-family: $sans;
+
+    &__title {
+        margin: 0 0 28px;
+        font-family: $serif;
+        font-weight: 400;
+        font-size: clamp(28px, 5vmin, 44px);
+    }
+}
+
+// dashboard — kafle statystyk
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 18px;
+    margin-bottom: 44px;
+}
+.stat {
+    padding: 22px;
+    border: 1px solid $hair;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, .02);
+
+    &__num {
+        display: block;
+        font-family: $serif;
+        font-size: 44px;
+        line-height: 1;
+    }
+    &__label {
+        display: block;
+        margin-top: 8px;
+        font-size: 12px;
+        letter-spacing: .08em;
+        color: $muted;
+    }
+}
+
+.panel-list {
+    &__title {
+        margin: 0 0 16px;
+        font-family: $serif;
+        font-weight: 400;
+        font-size: 22px;
+    }
+    &__empty { color: $muted; }
+}
+
+.panel-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+
+    th, td {
+        padding: 12px 14px;
+        text-align: left;
+        border-bottom: 1px solid $hair;
+    }
+    th {
+        font-size: 11px;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+        color: $muted;
+    }
+}
+
+// odznaki statusów rezerwacji
+.badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border: 1px solid $hair;
+    border-radius: 999px;
+    font-size: 11px;
+    letter-spacing: .06em;
+    color: $muted;
+
+    &--pending   { color: #f3e3bf; border-color: rgba(230, 200, 120, .45); }
+    &--confirmed { color: #bfe0f3; border-color: rgba(120, 180, 230, .45); }
+    &--issued    { color: #f3c9bf; border-color: rgba(230, 150, 120, .45); }
+    &--returned  { color: $muted; }
+}
+
+.panel-actions {
+    display: flex;
+    gap: 8px;
+
+    form { margin: 0; }
+}
+
+.btn {
+    display: inline-block;
+    padding: 7px 14px;
+    border: 1px solid $hair;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, .05);
+    color: $ink;
+    font-family: $sans;
+    font-size: 12px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background .2s, border-color .2s;
+
+    &:hover { background: rgba(255, 255, 255, .12); }
+    &--ok { color: #bff3c8; border-color: rgba(120, 230, 150, .5); }
+    &--no { color: #f3c2c2; border-color: rgba(230, 120, 120, .5); }
+    &--add { color: #000; background: #fff; border-color: #fff; &:hover { background: #fff; opacity: .85; } }
+}
+
+// nagłówek z akcją + powrót + formularz gry
+.panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 28px;
+
+    .panel__title { margin: 0; }
+}
+
+.panel-back {
+    display: inline-block;
+    margin-bottom: 18px;
+    color: $muted;
+    font-size: 14px;
+    text-decoration: none;
+
+    &:hover { color: $ink; }
+}
+
+.panel-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    max-width: 620px;
+    font-family: $sans;
+
+    > div { display: flex; flex-direction: column; gap: 6px; }
+
+    &__row {
+        display: flex;
+        gap: 16px;
+
+        > div { flex: 1; }
+    }
+
+    label { font-size: 12px; color: $muted; }
+
+    input, select, textarea {
+        box-sizing: border-box;
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid $hair;
+        border-radius: 6px;
+        background: rgba(255, 255, 255, .04);
+        color: $ink;
+        font: inherit;
+
+        &:focus { outline: none; border-color: rgba(255, 255, 255, .5); }
+    }
+    textarea { min-height: 120px; resize: vertical; }
+    ul { margin: 4px 0 0; padding-left: 18px; color: #f3c2c2; font-size: 13px; }
+}
+
+// --- responsywność ---
+
+@media (max-width: $bp-md) {
+    .panel { padding: 32px 5vw 12vh; }
+}
+
+@media (max-width: $bp-sm) {
+    .panel-nav {
+        flex-wrap: wrap;
+        gap: 12px 16px;
+        padding: 14px 6vw;
+
+        &__links {
+            order: 3; // linki schodzą do własnego rzędu pod brand + user
+            width: 100%;
+            gap: 18px;
+        }
+        &__user { gap: 12px; font-size: 12px; }
+        &__who { display: none; } // e-mail chowamy — mało miejsca
+    }
+
+    .panel { padding: 28px 6vw 12vh; }
+    .panel-head { flex-wrap: wrap; }
+    .panel-form__row { flex-direction: column; gap: 18px; }
+
+    // tabele → karty: wiersz = kafel, etykieta kolumny z data-label
+    .panel-table {
+        border: 0;
+
+        thead { display: none; }
+
+        tr {
+            display: block;
+            margin-bottom: 14px;
+            padding: 6px 16px;
+            border: 1px solid $hair;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, .02);
+        }
+        td {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 9px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, .07);
+            text-align: right;
+
+            &:last-child { border-bottom: 0; }
+            &::before {
+                content: attr(data-label);
+                flex: 0 0 auto;
+                font-size: 11px;
+                letter-spacing: .1em;
+                text-transform: uppercase;
+                color: $muted;
+                text-align: left;
+            }
+        }
+        .panel-actions {
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+    }
+}

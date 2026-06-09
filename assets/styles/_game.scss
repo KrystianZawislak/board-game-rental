@@ -1,0 +1,254 @@
+@use 'tokens' as *;
+
+// strona pojedynczej gry
+.game-page {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 48px 6vw 14vh;
+
+    &__back {
+        display: inline-block;
+        margin-bottom: 32px;
+        color: $muted;
+        font-size: 14px;
+        text-decoration: none;
+
+        &:hover { color: $ink; }
+    }
+    &__inner {
+        display: grid;
+        grid-template-columns: minmax(220px, 360px) 1fr;
+        gap: 40px;
+        align-items: start;
+    }
+    &__cover {
+        aspect-ratio: 3 / 4;
+        border: 1px solid $hair;
+        border-radius: 10px;
+        background: repeating-linear-gradient(45deg, rgba(255,255,255,.04) 0 14px, transparent 14px 28px);
+    }
+    &__category {
+        font-size: 12px;
+        letter-spacing: .22em;
+        text-transform: uppercase;
+        color: $muted;
+    }
+    &__title {
+        margin: 10px 0 24px;
+        font-size: clamp(36px, 6vmin, 64px);
+        font-weight: 400;
+        line-height: 1.05;
+    }
+    &__specs {
+        display: flex;
+        gap: 40px;
+        margin: 0 0 24px;
+        padding: 0;
+        list-style: none;
+        font-family: $sans;
+
+        li {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 18px;
+        }
+        span {
+            font-size: 11px;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: $muted;
+        }
+    }
+    &__avail {
+        display: inline-block;
+        margin-bottom: 28px;
+        padding: 7px 14px;
+        border: 1px solid $hair;
+        border-radius: 999px;
+        font-family: $sans;
+        font-size: 11px;
+        letter-spacing: .18em;
+        text-transform: uppercase;
+
+        &--free { color: #bff3c8; border-color: rgba(120, 230, 150, .4); }
+        &--out  { color: #f3c2c2; border-color: rgba(230, 120, 120, .4); }
+    }
+    &__desc {
+        max-width: 60ch;
+        margin: 0 0 32px;
+        color: rgba(255, 255, 255, .8);
+        font-size: clamp(17px, 2vmin, 20px);
+        line-height: 1.6;
+    }
+    &__reserve {
+        display: inline-block;
+        padding: 14px 34px;
+        border: 0;
+        border-radius: 6px;
+        background: #fff;
+        color: #000;
+        font-family: $sans;
+        font-size: 13px;
+        letter-spacing: .14em;
+        text-transform: uppercase;
+        text-decoration: none;
+        cursor: pointer;
+        transition: opacity .25s;
+
+        &:hover { opacity: .85; }
+        &--disabled {
+            background: rgba(255, 255, 255, .15);
+            color: $muted;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+    }
+}
+
+// lista zajętych terminów na stronie gry
+.game-page__booked {
+    margin: 0 0 24px;
+    font-family: $sans;
+
+    &-title {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 11px;
+        letter-spacing: .16em;
+        text-transform: uppercase;
+        color: $muted;
+    }
+    ul {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+    li {
+        padding: 5px 10px;
+        border: 1px solid $hair;
+        border-radius: 6px;
+        font-size: 13px;
+        color: rgba(255, 255, 255, .8);
+    }
+}
+
+// formularz rezerwacji (pola Symfony: <div><label><input>)
+.reserve {
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 48px 6vw 14vh;
+
+    &__back {
+        display: inline-block;
+        margin-bottom: 28px;
+        color: $muted;
+        font-size: 14px;
+        text-decoration: none;
+
+        &:hover { color: $ink; }
+    }
+    &__head { margin-bottom: 36px; }
+    &__kicker {
+        font-size: 12px;
+        letter-spacing: .22em;
+        text-transform: uppercase;
+        color: $muted;
+    }
+    &__title {
+        margin: 8px 0 0;
+        font-size: clamp(30px, 5vmin, 48px);
+        font-weight: 400;
+    }
+
+    &__form {
+        font-family: $sans;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+
+        > div { display: flex; flex-direction: column; gap: 6px; }
+
+        label {
+            font-size: 12px;
+            letter-spacing: .04em;
+            color: $muted;
+        }
+        input {
+            box-sizing: border-box;
+            width: 100%;
+            height: 46px;
+            padding: 0 14px;
+            border: 1px solid $hair;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, .04);
+            color: $ink;
+            font: inherit;
+
+            &:focus { outline: none; border-color: rgba(255, 255, 255, .5); }
+        }
+        // natywny date picker WebKita ma wymuszoną szerokość i czarną ikonę — oswajamy oba
+        input[type="date"] {
+            -webkit-appearance: none;
+            appearance: none;
+            min-width: 0; // bez tego pole rozpycha kontener na mobile
+
+            &::-webkit-date-and-time-value { text-align: left; }
+            &::-webkit-calendar-picker-indicator {
+                margin-left: auto;
+                opacity: .55;
+                cursor: pointer;
+                filter: invert(1); // czarna ikona → biała, widoczna na ciemnym tle
+            }
+        }
+        ul { // komunikaty walidacji
+            margin: 4px 0 0;
+            padding-left: 18px;
+            color: #f3c2c2;
+            font-size: 13px;
+        }
+    }
+    &__submit {
+        margin-top: 6px;
+        padding: 14px 28px;
+        border: 0;
+        border-radius: 6px;
+        background: #fff;
+        color: #000;
+        font-family: $sans;
+        font-size: 13px;
+        letter-spacing: .14em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: opacity .25s;
+
+        &:hover { opacity: .85; }
+    }
+}
+
+// --- responsywność ---
+
+@media (max-width: $bp-md) {
+    // okładka nad treścią (jedna kolumna), wyśrodkowana
+    .game-page__inner {
+        grid-template-columns: 1fr;
+        gap: 28px;
+    }
+    .game-page__cover {
+        width: 100%;
+        max-width: 300px;
+        margin: 0 auto;
+    }
+}
+
+@media (max-width: $bp-sm) {
+    .game-page { padding: 32px 6vw 12vh; }
+    .game-page__specs {
+        flex-wrap: wrap;
+        gap: 20px 36px;
+    }
+    .reserve { padding: 32px 6vw 12vh; }
+}

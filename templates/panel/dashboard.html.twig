@@ -1,0 +1,46 @@
+{% extends 'panel/base.html.twig' %}
+
+{% block title %}Pulpit — Panel{% endblock %}
+
+{% block panel %}
+<h1 class="panel__title">Pulpit</h1>
+
+<div class="stats">
+    <div class="stat">
+        <span class="stat__num">{{ issuedCount }}</span>
+        <span class="stat__label">Wypożyczone teraz</span>
+    </div>
+    <div class="stat">
+        <span class="stat__num">{{ pendingCount }}</span>
+        <span class="stat__label">Oczekujące rezerwacje</span>
+    </div>
+    <div class="stat">
+        <span class="stat__num">{{ confirmedCount }}</span>
+        <span class="stat__label">Potwierdzone / nadchodzące</span>
+    </div>
+</div>
+
+<section class="panel-list">
+    <h2 class="panel-list__title">Oczekujące na obsługę</h2>
+
+    {% if pending is empty %}
+        <p class="panel-list__empty">Brak oczekujących rezerwacji.</p>
+    {% else %}
+        <table class="panel-table">
+            <thead>
+                <tr><th>Gra</th><th>Termin</th><th>Gość</th><th>Telefon</th></tr>
+            </thead>
+            <tbody>
+                {% for r in pending %}
+                    <tr>
+                        <td data-label="Gra">{{ r.game.title }}</td>
+                        <td data-label="Termin">{{ r.startDate|date('d.m.Y') }} &ndash; {{ r.endDate|date('d.m.Y') }}</td>
+                        <td data-label="Gość">{{ r.guestName }}</td>
+                        <td data-label="Telefon">{{ r.guestPhone }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,13 @@
+// Tokeny współdzielone przez moduły (@use 'tokens' as *)
+
+$bg:    #0c0c0c;
+$ink:   #ffffff;
+$muted: rgba(255, 255, 255, .62);
+$hair:  rgba(255, 255, 255, .16);
+$serif: "Cormorant Garamond", Georgia, serif;
+$sans:  ui-sans-serif, system-ui, sans-serif;
+$checker: 22px;
+
+// breakpointy (desktop-first → nakładki @media trzymane przy komponentach w modułach)
+$bp-md: 900px;  // tablet / węższy desktop
+$bp-sm: 600px;  // telefon

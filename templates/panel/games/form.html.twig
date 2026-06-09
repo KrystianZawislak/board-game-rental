@@ -1,0 +1,22 @@
+{% extends 'panel/base.html.twig' %}
+
+{% block title %}{{ heading }} — Panel{% endblock %}
+
+{% block panel %}
+<a class="panel-back" href="{{ path('app_panel_games') }}">&larr; Wróć do gier</a>
+<h1 class="panel__title">{{ heading }}</h1>
+
+{{ form_start(form, { attr: { class: 'panel-form' } }) }}
+    {{ form_errors(form) }}
+    {{ form_row(form.title) }}
+    {{ form_row(form.category) }}
+    <div class="panel-form__row">
+        {{ form_row(form.minPlayers) }}
+        {{ form_row(form.maxPlayers) }}
+        {{ form_row(form.playingTime) }}
+    </div>
+    {{ form_row(form.description) }}
+    {{ form_row(form.imageName) }}
+    <button class="btn btn--ok" type="submit">Zapisz</button>
+{{ form_end(form) }}
+{% endblock %}

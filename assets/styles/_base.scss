@@ -1,0 +1,35 @@
+@use 'tokens' as *;
+
+:root { color-scheme: dark; }
+
+* { box-sizing: border-box; }
+
+html, body {
+    margin: 0;
+    background: $bg;
+    color: $ink;
+    font-family: $serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+// pływający przycisk „Panel" — globalny, tylko dla zalogowanego personelu
+.staff-link {
+    position: fixed;
+    top: 16px;
+    right: 18px;
+    z-index: 100;
+    padding: 8px 16px;
+    border: 1px solid rgba(255, 255, 255, .3);
+    border-radius: 999px;
+    background: rgba(12, 12, 12, .7);
+    color: $ink;
+    font-family: $sans;
+    font-size: 12px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    text-decoration: none;
+    backdrop-filter: blur(4px);
+    transition: background .25s;
+
+    &:hover { background: rgba(255, 255, 255, .16); }
+}

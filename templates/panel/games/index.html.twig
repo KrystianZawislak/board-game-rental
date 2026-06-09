@@ -1,0 +1,38 @@
+{% extends 'panel/base.html.twig' %}
+
+{% block title %}Gry — Panel{% endblock %}
+
+{% block panel %}
+<div class="panel-head">
+    <h1 class="panel__title">Gry</h1>
+    <a class="btn btn--add" href="{{ path('app_panel_game_new') }}">+ Dodaj grę</a>
+</div>
+
+<table class="panel-table">
+    <thead>
+        <tr><th>Tytuł</th><th>Kategoria</th><th>Gracze</th><th>Czas</th><th>Akcje</th></tr>
+    </thead>
+    <tbody>
+        {% for game in games %}
+            <tr>
+                <td data-label="Tytuł">{{ game.title }}</td>
+                <td data-label="Kategoria">{{ game.category.label }}</td>
+                <td data-label="Gracze">{{ game.minPlayers }}&ndash;{{ game.maxPlayers }}</td>
+                <td data-label="Czas">{{ game.playingTime }} min</td>
+                <td data-label="Akcje">
+                    <div class="panel-actions">
+                        <a class="btn" href="{{ path('app_panel_game_edit', {id: game.id}) }}">Edytuj</a>
+                        {% if is_granted('ROLE_MANAGER') %}
+                            <form method="post" action="{{ path('app_panel_game_delete', {id: game.id}) }}"
+                                  onsubmit="return confirm('Usunąć grę {{ game.title|e('js') }}?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('panel-game-delete') }}">
+                                <button class="btn btn--no" type="submit">Usuń</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

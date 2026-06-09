@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Rezerwacja — {{ game.title }}{% endblock %}
+
+{% block body %}
+<main class="reserve">
+    <a class="reserve__back" href="{{ path('app_game_show', { id: game.id }) }}">← Wróć do gry</a>
+
+    <header class="reserve__head">
+        <span class="reserve__kicker">Rezerwacja</span>
+        <h1 class="reserve__title">{{ game.title }}</h1>
+    </header>
+
+    {{ form_start(form, { attr: { class: 'reserve__form' } }) }}
+        {{ form_errors(form) }}
+        {{ form_row(form.guestName) }}
+        {{ form_row(form.guestPhone) }}
+        {{ form_row(form.guestEmail) }}
+        {{ form_row(form.startDate) }}
+        {{ form_row(form.endDate) }}
+        <button class="reserve__submit" type="submit">Wyślij zgłoszenie</button>
+    {{ form_end(form) }}
+</main>
+{% endblock %}

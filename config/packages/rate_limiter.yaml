@@ -1,0 +1,20 @@
+framework:
+    rate_limiter:
+        # limit zgłoszeń rezerwacji per adres IP — ochrona przed spamem/zasypaniem terminami
+        reservation:
+            policy: 'sliding_window'
+            limit: 5
+            interval: '10 minutes'
+            cache_pool: 'rate_limiter.cache'
+    cache:
+        pools:
+            rate_limiter.cache:
+                adapter: cache.app
+
+when@test:
+    framework:
+        cache:
+            pools:
+                # w testach limiter trzyma stan w pamięci → reset na każdy boot kernela (izolacja)
+                rate_limiter.cache:
+                    adapter: cache.adapter.array

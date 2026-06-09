@@ -1,0 +1,88 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div data-controller="homepage"
+     data-homepage-frame-count-value="192"
+     data-homepage-frame-path-value="/frames/frame-%.jpg"
+     data-homepage-reveal-end-value="0.12"
+     data-homepage-scrim-level-value="0.42">
+
+    {# hero: klatki sterowane scrollem + napisy #}
+    <div class="hero" data-homepage-target="track">
+        <div class="hero__stage">
+            <canvas class="hero__canvas" data-homepage-target="canvas"></canvas>
+            <div class="hero__scrim" data-homepage-target="scrim"></div>
+            <div class="hero__vignette" data-homepage-target="vignette"></div>
+
+            <div class="captions">
+                <div class="caption" data-homepage-target="caption"
+                     data-a="0.10" data-b="0.18" data-c="0.30" data-d="0.38">
+                    <span class="caption__kicker">Wypożyczalnia gier planszowych</span>
+                    <span class="caption__title">Setki gier.<br>Jedna półka.</span>
+                </div>
+                <div class="caption" data-homepage-target="caption"
+                     data-a="0.42" data-b="0.50" data-c="0.62" data-d="0.70">
+                    <span class="caption__kicker">Jak to działa</span>
+                    <span class="caption__title">Wybierasz termin —<br>my szykujemy grę.</span>
+                </div>
+                <div class="caption" data-homepage-target="caption"
+                     data-a="0.72" data-b="0.80" data-c="0.86" data-d="0.93">
+                    <span class="caption__kicker">Bez kupowania</span>
+                    <span class="caption__title">Każdy wieczór<br>inna gra.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="checker" aria-hidden="true"></div>
+
+    {# katalog — wiersze wg kategorii; filtrowanie w miejscu (JS), wyniki renderują się pod filtrami #}
+    <section class="catalog" id="catalog" data-controller="catalog">
+        <header class="catalog__head">
+            <span class="catalog__kicker">Katalog</span>
+            <h2 class="catalog__title">Wybierz grę</h2>
+        </header>
+
+        {{ include('home/_filters.html.twig') }}
+
+        {# domyślny widok: wiersze „Netflix" #}
+        <div class="catalog__rows" data-catalog-target="rows">
+            {% for row in rows %}
+                <div class="row" data-controller="carousel">
+                    <h3 class="row__title">{{ row.category.label }}</h3>
+                    <div class="row__viewport">
+                        <button class="row__arrow row__arrow--prev" type="button"
+                                data-action="carousel#prev" data-carousel-target="prev" aria-label="Przewiń w lewo">‹</button>
+                        <div class="row__track" data-carousel-target="track">
+                            {% for game in row.games %}
+                                {{ include('home/_card.html.twig', { game: game }) }}
+                            {% endfor %}
+                        </div>
+                        <button class="row__arrow row__arrow--next" type="button"
+                                data-action="carousel#next" data-carousel-target="next" aria-label="Przewiń w prawo">›</button>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        {# widok po filtrze: płaska siatka pasujących gier (wypełniana przez JS) #}
+        <div class="games" data-catalog-target="results" hidden></div>
+        <p class="catalog__empty" data-catalog-target="empty" hidden>Brak gier spełniających wybrane kryteria.</p>
+    </section>
+
+    {# intro: czarna nakładka na starcie #}
+    <div class="veil" data-homepage-target="veil">
+        <div class="veil__brand" data-homepage-target="introBrand">
+            <div class="veil__word">PIONEK</div>
+            <div class="veil__tag">Planszówki na wynos</div>
+        </div>
+        <div class="veil__hint" data-homepage-target="introHint">
+            <span>Przewiń</span>
+            <span class="veil__line"></span>
+        </div>
+        <div class="veil__bar-track">
+            <div class="veil__bar" data-homepage-target="bar"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}

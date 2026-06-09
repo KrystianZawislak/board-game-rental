@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ game.title }} — Pionek{% endblock %}
+
+{% block body %}
+<main class="game-page">
+    <a class="game-page__back" href="{{ path('app_home') }}#catalog">← Wróć do katalogu</a>
+
+    <div class="game-page__inner">
+        <div class="game-page__cover">
+            {% if game.imageName %}<img src="{{ asset('images/games/' ~ game.imageName) }}" alt="Okładka gry {{ game.title }}">{% endif %}
+        </div>
+
+        <div class="game-page__info">
+            <span class="game-page__category">{{ game.category.label }}</span>
+            <h1 class="game-page__title">{{ game.title }}</h1>
+
+            <ul class="game-page__specs">
+                <li><span>Gracze</span>{{ game.minPlayers }}–{{ game.maxPlayers }}</li>
+                <li><span>Czas gry</span>{{ game.playingTime }} min</li>
+            </ul>
+
+            <span class="game-page__avail game-page__avail--{{ game.currentlyAvailable ? 'free' : 'out' }}">
+                {{ game.currentlyAvailable ? 'Dostępna do wypożyczenia' : 'Obecnie niedostępna' }}
+            </span>
+
+            <p class="game-page__desc">{{ game.description }}</p>
+
+            {% set bookings = game.upcomingReservations %}
+            {% if bookings is not empty %}
+                <div class="game-page__booked">
+                    <span class="game-page__booked-title">Zajęte terminy</span>
+                    <ul>
+                        {% for r in bookings %}
+                            <li>{{ r.startDate|date('d.m.Y') }} &ndash; {{ r.endDate|date('d.m.Y') }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+            <a class="game-page__reserve" href="{{ path('app_reservation_new', { id: game.id }) }}">Zarezerwuj na wolny termin</a>
+        </div>
+    </div>
+</main>
+{% endblock %}

@@ -1,0 +1,11 @@
+// Pionek — wejście SCSS. Style trzymane w modułach assets/styles/_*.scss;
+// każdy moduł importuje tokeny i dokłada własne nakładki responsywne.
+
+@use 'base';
+@use 'hero';
+@use 'catalog';
+@use 'game';
+@use 'flash';
+@use 'login';
+@use 'panel';
+@use 'error';

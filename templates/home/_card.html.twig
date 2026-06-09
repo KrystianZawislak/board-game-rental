@@ -1,0 +1,20 @@
+<a class="game-card" href="{{ path('app_game_show', { id: game.id }) }}"
+   data-category="{{ game.category.value }}"
+   data-min="{{ game.minPlayers }}"
+   data-max="{{ game.maxPlayers }}"
+   data-time="{{ game.playingTime }}">
+    <div class="game-card__thumb">
+        {% if game.imageName %}<img src="{{ asset('images/games/' ~ game.imageName) }}" alt="{{ game.title }}" loading="lazy">{% endif %}
+    </div>
+    <div class="game-card__body">
+        <h3 class="game-card__name">{{ game.title }}</h3>
+        <ul class="game-card__specs">
+            <li>{{ game.minPlayers }}–{{ game.maxPlayers }} graczy</li>
+            <li>{{ game.playingTime }} min</li>
+            <li>{{ game.category.label }}</li>
+        </ul>
+        <span class="game-card__avail game-card__avail--{{ game.currentlyAvailable ? 'free' : 'out' }}">
+            {{ game.currentlyAvailable ? 'Dostępna' : 'Niedostępna' }}
+        </span>
+    </div>
+</a>

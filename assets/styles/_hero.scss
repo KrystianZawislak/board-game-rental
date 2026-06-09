@@ -1,0 +1,168 @@
+@use 'tokens' as *;
+
+@keyframes hint-pulse {
+    0%, 100% { transform: scaleY(.4); opacity: .4; }
+    50%      { transform: scaleY(1);  opacity: 1; }
+}
+
+.hero {
+    position: relative;
+    height: 460vh; // krótszy tor = szybsze przejście przez klatki
+
+    &__stage {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        width: 100%;
+        overflow: hidden;
+        background: $bg;
+    }
+    &__canvas {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        width: 100%;
+        height: 100%;
+        display: block;
+        background: $bg;
+    }
+    &__scrim {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        pointer-events: none;
+        opacity: 0;
+        background: #000;
+    }
+    &__vignette {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        pointer-events: none;
+        opacity: 0;
+        background: radial-gradient(60% 50% at 50% 50%, rgba(0,0,0,.72) 0%, rgba(0,0,0,.4) 42%, transparent 74%);
+    }
+}
+
+// napisy pojawiające się wraz ze scrollem
+.captions {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+}
+.caption {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 8vw;
+    opacity: 0;
+    will-change: opacity, transform;
+
+    &__kicker {
+        display: block;
+        margin-bottom: 16px;
+        padding-left: .46em;
+        font-size: clamp(11px, 1.4vmin, 15px);
+        letter-spacing: .46em;
+        text-transform: uppercase;
+        color: $muted;
+        text-shadow: 0 1px 14px rgba(0,0,0,.9), 0 0 34px rgba(0,0,0,.7);
+    }
+    &__title {
+        display: block;
+        font-size: clamp(28px, 5.2vmin, 62px);
+        font-weight: 400;
+        line-height: 1.1;
+        text-wrap: balance;
+        text-shadow: 0 2px 26px rgba(0,0,0,.92), 0 0 70px rgba(0,0,0,.8);
+    }
+}
+
+// szachownica na granicy hero / treść
+.checker {
+    position: relative;
+    z-index: 3;
+    width: 100%;
+    height: $checker;
+    background-image: conic-gradient(#fff 25%, $bg 0 50%, #fff 0 75%, $bg 0);
+    background-size: $checker $checker;
+    box-shadow: 0 0 26px rgba(0,0,0,.6);
+}
+
+// intro: czarna nakładka na starcie (znika po pierwszym scrollu)
+.veil {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    background: $bg;
+
+    &__brand {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        will-change: opacity;
+    }
+    &__word {
+        padding-left: .18em;
+        font-size: clamp(56px, 15vmin, 190px);
+        font-weight: 400;
+        line-height: .9;
+        letter-spacing: .18em;
+    }
+    &__tag {
+        padding-left: .44em;
+        font-size: clamp(12px, 1.5vmin, 17px);
+        letter-spacing: .44em;
+        text-transform: uppercase;
+        color: $muted;
+    }
+    &__hint {
+        position: absolute;
+        left: 50%;
+        bottom: 84px;
+        transform: translateX(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        will-change: opacity;
+        font-size: 11px;
+        letter-spacing: .4em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, .55);
+    }
+    &__line {
+        width: 1px;
+        height: 46px;
+        background: linear-gradient(rgba(255, 255, 255, .55), transparent);
+        transform-origin: top;
+        animation: hint-pulse 1.8s ease-in-out infinite;
+    }
+    &__bar-track {
+        position: absolute;
+        left: 50%;
+        bottom: 34px;
+        transform: translateX(-50%);
+        width: min(220px, 46vw);
+        height: 1px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, .16);
+    }
+    &__bar {
+        height: 100%;
+        width: 0;
+        background: rgba(255, 255, 255, .85);
+        transition: width .2s linear;
+    }
+}

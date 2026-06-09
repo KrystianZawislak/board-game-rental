@@ -7,7 +7,9 @@
     <a class="game-page__back" href="{{ path('app_home') }}#catalog">← Wróć do katalogu</a>
 
     <div class="game-page__inner">
-        <div class="game-page__cover"></div>
+        <div class="game-page__cover">
+            {% if game.imageName %}<img src="{{ asset('images/games/' ~ game.imageName) }}" alt="Okładka gry {{ game.title }}">{% endif %}
+        </div>
 
         <div class="game-page__info">
             <span class="game-page__category">{{ game.category.label }}</span>

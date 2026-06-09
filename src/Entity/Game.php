@@ -45,6 +45,10 @@ class Game
     private ?int $playingTime = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Regex(
+        pattern: '/^(?:[\w\-]+\.(?:jpe?g|png|webp|avif))?$/i',
+        message: 'Nazwa pliku: litery/cyfry/-/_ i rozszerzenie jpg, png, webp lub avif.',
+    )]
     private ?string $imageName = null;
 
     #[ORM\Column(enumType: GameCategory::class)]

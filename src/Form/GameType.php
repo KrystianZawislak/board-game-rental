@@ -26,7 +26,11 @@ class GameType extends AbstractType
             ->add('minPlayers', IntegerType::class, ['label' => 'Min. graczy'])
             ->add('maxPlayers', IntegerType::class, ['label' => 'Maks. graczy'])
             ->add('playingTime', IntegerType::class, ['label' => 'Czas gry (min)'])
-            ->add('description', TextareaType::class, ['label' => 'Opis']);
+            ->add('description', TextareaType::class, ['label' => 'Opis'])
+            ->add('imageName', TextType::class, [
+                'label' => 'Nazwa pliku zdjęcia (opcjonalnie, z public/images/games/)',
+                'required' => false,
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

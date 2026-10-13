@@ -15,7 +15,7 @@ export default class extends Controller {
 
     static values = {
         frameCount: { type: Number, default: 192 },
-        framePath:  { type: String, default: '/frames/frame-%.jpg' }, // % is replaced by the zero-padded frame number
+        framePath:  { type: String, default: '/frames/frame-%.webp' }, // % is replaced by the zero-padded frame number
         revealEnd:  { type: Number, default: 0.12 },                  // scroll % at which the intro lifts
         scrimLevel: { type: Number, default: 0.42 },                  // residual scene dimming
         introFade:  { type: Number, default: 0.06 },                  // scroll % for the intro fade

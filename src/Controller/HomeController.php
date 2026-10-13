@@ -14,7 +14,7 @@ final class HomeController extends AbstractController
     #[Route('/', name: 'app_home', methods: ['GET'])]
     public function index(GameRepository $games): Response
     {
-        // wszystkie gry pogrupowane w wiersze wg kategorii; filtrowanie dzieje się w przeglądarce
+        // all games grouped into rows by category; filtering happens client-side
         return $this->render('home/index.html.twig', [
             'rows' => $this->groupByCategory($games),
             'categories' => GameCategory::cases(),

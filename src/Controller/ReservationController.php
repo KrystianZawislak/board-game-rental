@@ -32,11 +32,11 @@ final class ReservationController extends AbstractController
 
         if ($form->isSubmitted()) {
             if (!$reservationLimiter->create($request->getClientIp() ?? '')->consume()->isAccepted()) {
-                // za dużo zgłoszeń z jednego IP — ochrona przed spamem rezerwacjami
+                // too many requests from one IP (anti-spam)
                 $form->addError(new FormError('Zbyt wiele prób rezerwacji z tego adresu. Spróbuj ponownie za chwilę.'));
             } elseif ($form->isValid()) {
-                // Blokada wiersza gry (SELECT ... FOR UPDATE) serializuje równoległe rezerwacje tej samej
-                // gry: bez niej dwa zgłoszenia mogłyby oba przejść sprawdzenie kolizji i oba się zapisać (TOCTOU).
+                // Lock the game row (SELECT ... FOR UPDATE) to serialize concurrent bookings of the same
+                // game; otherwise two requests could both pass the overlap check (TOCTOU).
                 $taken = $em->wrapInTransaction(function () use ($em, $game, $reservation, $reservations): bool {
                     $em->lock($game, LockMode::PESSIMISTIC_WRITE);
 
@@ -44,7 +44,7 @@ final class ReservationController extends AbstractController
                         return true;
                     }
 
-                    // wartości narzucone serwerowo — celowo NIE pochodzą z formularza
+                    // server-controlled values, intentionally not taken from the form
                     $reservation->setGame($game);
                     $reservation->setStatus(ReservationStatus::PENDING);
                     $reservation->setCreatedAt(new \DateTimeImmutable());

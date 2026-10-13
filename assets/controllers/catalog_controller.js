@@ -1,9 +1,9 @@
 import { Controller } from '@hotwired/stimulus';
 
 /**
- * Filtrowanie katalogu w miejscu (bez przeładowania strony).
- * Brak filtrów → wiersze „Netflix". Dowolna kombinacja (kategoria / gracze / czas)
- * → płaska siatka pasujących gier renderowana pod filtrami.
+ * In-place catalog filtering (no page reload).
+ * No filters: Netflix-style rows. Any filter (category / players / time):
+ * a flat grid of matching games below the filters.
  */
 export default class extends Controller {
     static targets = ['category', 'players', 'time', 'rows', 'results', 'empty', 'clear'];
@@ -27,13 +27,13 @@ export default class extends Controller {
 
         const matches = [...this.rowsTarget.querySelectorAll('.game-card')].filter((card) => {
             if (category && card.dataset.category !== category) return false;
-            // przedział domknięty: min <= gracze <= max
+            // inclusive range: min <= players <= max
             if (hasPlayers && !(+card.dataset.min <= players && +card.dataset.max >= players)) return false;
             if (hasTime && +card.dataset.time > maxTime) return false;
             return true;
         });
 
-        // przy aktywnym filtrze: kolejność alfabetyczna po nazwie (PL)
+        // with an active filter: alphabetical by title (Polish collation)
         const name = (card) => card.querySelector('.game-card__name').textContent.trim();
         matches.sort((a, b) => name(a).localeCompare(name(b), 'pl'));
 

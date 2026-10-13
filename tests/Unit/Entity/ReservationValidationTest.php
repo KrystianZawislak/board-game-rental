@@ -8,8 +8,8 @@ use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
- * Walidacja zgłoszenia rezerwacji (Asserty + Assert\Callback na zakresie dat).
- * Sam Validator, bez bazy.
+ * Reservation request validation (asserts + Assert\Callback on the date range).
+ * Validator only, no database.
  */
 final class ReservationValidationTest extends TestCase
 {
@@ -61,7 +61,7 @@ final class ReservationValidationTest extends TestCase
             ->setStartDate(new \DateTimeImmutable('+5 days'))
             ->setEndDate(new \DateTimeImmutable('+2 days'));
 
-        // łapane przez Assert\Callback validateDateRange()
+        // caught by Assert\Callback validateDateRange()
         self::assertContains('endDate', $this->violatedPaths($reservation));
     }
 

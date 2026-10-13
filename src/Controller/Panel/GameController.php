@@ -67,7 +67,7 @@ final class GameController extends AbstractController
     }
 
     #[Route('/{id}/delete', name: 'app_panel_game_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsGranted('ROLE_MANAGER')] // trwałe usunięcie tylko dla managera
+    #[IsGranted('ROLE_MANAGER')] // hard delete is manager-only
     public function delete(Game $game, Request $request, EntityManagerInterface $em, LoggerInterface $auditLogger): Response
     {
         if (!$this->isCsrfTokenValid('panel-game-delete', (string) $request->request->get('_token'))) {
@@ -80,8 +80,8 @@ final class GameController extends AbstractController
             return $this->redirectToRoute('app_panel_games');
         }
 
-        // gra bez aktywnych rezerwacji — kasujemy ją wraz z historią (zwrócone rezerwacje, cascade remove)
-        $auditLogger->info('Gra usunięta', [
+        // no active reservations: delete the game with its history (cascade remove)
+        $auditLogger->info('Game deleted', [
             'gameId' => $game->getId(),
             'title' => $game->getTitle(),
             'by' => $this->getUser()?->getUserIdentifier(),

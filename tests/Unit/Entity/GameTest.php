@@ -8,8 +8,8 @@ use App\Enum\ReservationStatus;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Model dostępności jest kalendarzowy: „wolna dziś" zależy od statusu i tego,
- * czy okres rezerwacji obejmuje dzisiejszą datę. Testy bez bazy — czysta logika encji.
+ * Availability is calendar-based: "available today" depends on status and whether
+ * the reservation period covers today. Pure entity logic, no database.
  */
 final class GameTest extends TestCase
 {
@@ -20,7 +20,7 @@ final class GameTest extends TestCase
 
     public function testIssuedReservationMakesItUnavailable(): void
     {
-        // wydana i niezwrócona — gry fizycznie nie ma, niezależnie od dat
+        // issued and not returned: physically gone regardless of dates
         $game = $this->gameWith($this->reservation('-10 days', '-5 days', ReservationStatus::ISSUED));
 
         self::assertFalse($game->isCurrentlyAvailable());
@@ -65,7 +65,7 @@ final class GameTest extends TestCase
 
         $game = $this->gameWith($past, $returned, $later, $sooner);
 
-        // tylko aktywne i niezakończone, posortowane od najbliższego terminu
+        // only active, not yet ended, soonest first
         self::assertSame([$sooner, $later], $game->getUpcomingReservations());
     }
 

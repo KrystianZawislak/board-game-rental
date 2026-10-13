@@ -14,8 +14,8 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 /**
- * Baza dla testów funkcjonalnych: świeży schemat bazy na każdy test (izolacja)
- * + drobne fabryki encji. Wymaga istniejącej bazy `*_test` (patrz README).
+ * Base class for functional tests: fresh schema per test plus small entity factories.
+ * Requires an existing `*_test` database (see README).
  */
 abstract class DatabaseWebTestCase extends WebTestCase
 {

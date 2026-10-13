@@ -1,59 +1,52 @@
-# Pionek — wypożyczalnia gier planszowych
+# Pionek — Board Game Rental
 
-Publiczny katalog gier z filtrowaniem, rezerwacja przez gościa i ręcznie zbudowany panel personelu.
-Projekt rekrutacyjny (MVP). Stack: **PHP 8.2+ · Symfony 7.4 · Twig · SCSS · Doctrine + MySQL**.
+A board game rental MVP. It has a public catalog with client-side filtering, guest reservations and a staff panel for managing games and the reservation lifecycle. The UI is in Polish.
 
-## Uruchomienie
+**Stack:** PHP 8.2+, Symfony 7.4, Twig, Stimulus, SCSS, Doctrine, MySQL
+
+## Features
+
+- Netflix-style catalog with filters (category, players, play time) and a scroll-driven canvas hero
+- Guest reservations with date-overlap checks, row locking against race conditions and per-IP rate limiting
+- Staff panel with roles (`ROLE_STAFF`, `ROLE_MANAGER`): game CRUD and the reservation flow *pending → confirmed → issued → returned*
+- Security: login throttling, CSRF, CSP and security headers, audit log, custom 404/500 pages
+
+## Getting started
 
 ```bash
-# 1. zależności
 composer install
 
-# 2. dane do bazy — utwórz .env.local (NIE jest commitowany), podmień usera/hasło
-echo 'DATABASE_URL="mysql://USER:HASŁO@127.0.0.1:3306/board_games_rental?serverVersion=8.0&charset=utf8mb4"' > .env.local
+# local DB credentials (not committed)
+echo 'DATABASE_URL="mysql://USER:PASSWORD@127.0.0.1:3306/board_games_rental?serverVersion=8.0&charset=utf8mb4"' > .env.local
 
-# 3. baza + struktura + dane startowe
 php bin/console doctrine:database:create
-php bin/console doctrine:migrations:migrate --no-interaction
-php bin/console doctrine:fixtures:load --no-interaction
-
-# 4. style + start
+php bin/console doctrine:migrations:migrate -n
+php bin/console doctrine:fixtures:load -n
 php bin/console sass:build
-symfony server:start -d --no-tls          # albo: php -S 127.0.0.1:8000 -t public
+
+symfony server:start -d --no-tls   # or: php -S 127.0.0.1:8000 -t public
 ```
 
-Aplikacja: **http://127.0.0.1:8000** · logowanie: **/login**
+Open http://127.0.0.1:8000. The staff login is at `/login`.
 
-### Konta demo
-
-| Rola | E-mail | Hasło |
-|------|--------|-------|
+| Role | E-mail | Password |
+|---|---|---|
 | Manager | `manager@pionek.test` | `manager1234` |
-| Pracownik | `pracownik@pionek.test` | `pracownik1234` |
+| Staff | `pracownik@pionek.test` | `pracownik1234` |
 
-## Podgląd na telefonie (ta sama sieć WiFi)
+To test on a phone, run `symfony server:start -d --no-tls --allow-all-ip` and open `http://<your-ip>:8000`.
 
-```bash
-symfony server:start -d --no-tls --allow-all-ip
-# adres komputera: ipconfig getifaddr en0  →  na telefonie: http://<IP>:8000
-```
+## Tests
 
-## Testy
-
-Środowisko `test` nie ładuje `.env.local`, więc dane do bazy testowej podaj w `.env.test.local`:
+The `test` environment doesn't load `.env.local`, so put its credentials in `.env.test.local`:
 
 ```bash
 mysql -u root -e "CREATE DATABASE board_games_rental_test CHARACTER SET utf8mb4;"
-echo 'DATABASE_URL="mysql://USER:HASŁO@127.0.0.1:3306/board_games_rental?serverVersion=8.0&charset=utf8mb4"' > .env.test.local
+echo 'DATABASE_URL="mysql://USER:PASSWORD@127.0.0.1:3306/board_games_rental?serverVersion=8.0&charset=utf8mb4"' > .env.test.local
 php bin/phpunit
 ```
 
-## Zdjęcia gier
+## Notes
 
-Domyślnie placeholder. Aby dodać zdjęcie: wrzuć plik do `public/images/games/`, a w panelu (edycja gry)
-wpisz jego nazwę w polu „Nazwa pliku zdjęcia".
-
-## Produkcja
-
-Ustaw `APP_ENV=prod` (wyłącza profiler, włącza CSP i własne strony 404/500), wymuś HTTPS,
-`composer install --no-dev` + `php bin/console asset-map:compile`.
+- **Game images:** drop a file into `public/images/games/` and enter its filename when editing the game. Games without an image show a placeholder.
+- **Production:** set `APP_ENV=prod` (this enables CSP and the custom error pages), then run `composer install --no-dev` and `php bin/console asset-map:compile`.

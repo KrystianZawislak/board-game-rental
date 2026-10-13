@@ -201,9 +201,9 @@ class Game
     }
 
     /**
-     * Czy gra jest wolna DZIŚ (model kalendarzowy — rezerwacja w przyszłości nie blokuje dnia dzisiejszego):
-     *  - wydana (ISSUED) i niezwrócona = nie ma jej teraz,
-     *  - zgłoszona/potwierdzona, której okres obejmuje dzisiejszą datę = zajęta dziś.
+     * Whether the game is available today (future reservations don't block today):
+     *  - ISSUED and not returned = not on the shelf,
+     *  - PENDING/CONFIRMED with a period covering today = taken today.
      */
     public function isCurrentlyAvailable(): bool
     {
@@ -228,8 +228,8 @@ class Game
     }
 
     /**
-     * Aktywne rezerwacje, których termin jeszcze się nie skończył — do pokazania
-     * listy zajętych terminów na stronie gry (bez danych osobowych). Posortowane od najbliższej.
+     * Active reservations that haven't ended yet, shown as booked dates on the game page
+     * (no personal data). Soonest first.
      *
      * @return Reservation[]
      */
@@ -249,8 +249,7 @@ class Game
     }
 
     /**
-     * Czy gra ma aktywną rezerwację (oczekującą, potwierdzoną lub wydaną).
-     * Zwrócone (RETURNED) to już zamknięta historia — nie liczą się.
+     * Whether the game has a pending, confirmed or issued reservation (RETURNED doesn't count).
      */
     public function hasActiveReservations(): bool
     {

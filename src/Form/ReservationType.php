@@ -14,7 +14,7 @@ class ReservationType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        // tylko pola gościa — status i gra ustawia serwer (ochrona przed mass assignment)
+        // guest fields only; status and game are set server-side (prevents mass assignment)
         $builder
             ->add('guestName', TextType::class, [
                 'label' => 'Imię i nazwisko',

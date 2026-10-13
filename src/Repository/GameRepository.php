@@ -17,8 +17,8 @@ class GameRepository extends ServiceEntityRepository
     }
 
     /**
-     * Wszystkie gry wraz z rezerwacjami (eager load), żeby sprawdzanie dostępności
-     * w widoku nie generowało osobnego zapytania na każdą grę (uniknięcie N+1).
+     * All games with reservations eager-loaded, so availability checks in the view
+     * don't trigger a query per game (avoids N+1).
      *
      * @return Game[]
      */

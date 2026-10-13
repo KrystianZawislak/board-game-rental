@@ -6,7 +6,7 @@ use App\Entity\Game;
 use App\Enum\ReservationStatus;
 
 /**
- * Trwałe usunięcie gry: tylko manager, i tylko gdy gra nie ma aktywnej rezerwacji.
+ * Hard delete of a game: manager only, and only without active reservations.
  */
 final class PanelGameDeletionTest extends DatabaseWebTestCase
 {
@@ -15,7 +15,7 @@ final class PanelGameDeletionTest extends DatabaseWebTestCase
         $game = $this->createGame();
         $this->client->loginUser($this->createUser('staff@pionek.test', ['ROLE_STAFF']));
 
-        // IsGranted(ROLE_MANAGER) odrzuca zanim akcja w ogóle ruszy — 403
+        // IsGranted(ROLE_MANAGER) rejects before the action runs (403)
         $this->client->request('POST', '/panel/games/'.$game->getId().'/delete');
 
         self::assertResponseStatusCodeSame(403);

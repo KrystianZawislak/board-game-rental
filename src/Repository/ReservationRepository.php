@@ -19,9 +19,8 @@ class ReservationRepository extends ServiceEntityRepository
     }
 
     /**
-     * Czy podany termin koliduje z inną aktywną rezerwacją tej gry.
-     * Kolizja = istniejący.start <= nowy.koniec ORAZ istniejący.koniec >= nowy.start.
-     * Rezerwacje zwrócone (RETURNED) nie blokują.
+     * Whether the given period overlaps another active reservation of this game
+     * (existing.start <= new.end AND existing.end >= new.start). RETURNED reservations don't block.
      */
     public function overlaps(Game $game, \DateTimeImmutable $start, \DateTimeImmutable $end): bool
     {
@@ -39,7 +38,7 @@ class ReservationRepository extends ServiceEntityRepository
     }
 
     /**
-     * Aktywne rezerwacje do obsługi w panelu (bez zwróconych), z dołączoną grą, posortowane wg terminu.
+     * Active (non-returned) reservations for the staff panel, with the game joined, ordered by date.
      *
      * @return Reservation[]
      */

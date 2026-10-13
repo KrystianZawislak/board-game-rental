@@ -1,6 +1,6 @@
 @use 'tokens' as *;
 
-// komunikaty (flash) — na desktopie u góry, na telefonie u dołu
+// flash messages: top on desktop, bottom on phones
 .flash {
     position: fixed;
     top: 18px;
@@ -27,6 +27,6 @@
         top: auto;
         bottom: 34px;
 
-        &--hide { transform: translateX(-50%) translateY(12px); } // zsuwa się w dół
+        &--hide { transform: translateX(-50%) translateY(12px); }
     }
 }

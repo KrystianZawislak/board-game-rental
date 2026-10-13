@@ -6,8 +6,8 @@ use App\Entity\Reservation;
 use App\Enum\ReservationStatus;
 
 /**
- * Zgłaszanie rezerwacji przez gościa: status narzucony serwerowo (PENDING),
- * a termin kolidujący z istniejącą rezerwacją jest odrzucany.
+ * Guest reservation flow: status is forced to PENDING server-side,
+ * and overlapping dates are rejected.
  */
 final class ReservationFlowTest extends DatabaseWebTestCase
 {
@@ -27,7 +27,7 @@ final class ReservationFlowTest extends DatabaseWebTestCase
 
         $reservations = $this->em->getRepository(Reservation::class)->findAll();
         self::assertCount(1, $reservations);
-        // status zawsze PENDING — gość nie może go ustawić z formularza
+        // always PENDING; a guest can't set it via the form
         self::assertSame(ReservationStatus::PENDING, $reservations[0]->getStatus());
     }
 
@@ -44,7 +44,7 @@ final class ReservationFlowTest extends DatabaseWebTestCase
             'reservation[endDate]' => (new \DateTimeImmutable('+5 days'))->format('Y-m-d'),
         ]));
 
-        // zostajemy na stronie z błędem, nowa rezerwacja nie powstaje
+        // stays on the page with an error, no reservation is created
         self::assertSelectorTextContains('.reserve__form', 'zajęty');
         self::assertCount(1, $this->em->getRepository(Reservation::class)->findAll());
     }

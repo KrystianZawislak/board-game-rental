@@ -16,7 +16,7 @@ class AppFixtures extends Fixture
         .'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.';
 
     /**
-     * Tytuł, kategoria, min graczy, max graczy, czas gry (min).
+     * Title, category, min players, max players, play time (minutes).
      *
      * @var list<array{0: string, 1: GameCategory, 2: int, 3: int, 4: int}>
      */
@@ -113,7 +113,6 @@ class AppFixtures extends Fixture
             ->setEmail($email)
             ->setRoles($roles);
 
-        // Hasło hashowane Argon2id (algorytm ustawiony w config/packages/security.yaml).
         $user->setPassword($this->passwordHasher->hashPassword($user, $plainPassword));
 
         $manager->persist($user);

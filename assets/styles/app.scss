@@ -1,5 +1,4 @@
-// Pionek — wejście SCSS. Style trzymane w modułach assets/styles/_*.scss;
-// każdy moduł importuje tokeny i dokłada własne nakładki responsywne.
+// SCSS entry point. Each _*.scss module imports the tokens and owns its responsive overrides.
 
 @use 'base';
 @use 'hero';

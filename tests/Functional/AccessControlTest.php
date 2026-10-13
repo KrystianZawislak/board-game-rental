@@ -3,7 +3,7 @@
 namespace App\Tests\Functional;
 
 /**
- * Panel jest zamknięty dla niezalogowanych — firewall przekierowuje na logowanie (OWASP A01).
+ * The panel is closed to guests; the firewall redirects to login (OWASP A01).
  */
 final class AccessControlTest extends DatabaseWebTestCase
 {

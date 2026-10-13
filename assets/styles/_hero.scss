@@ -7,7 +7,7 @@
 
 .hero {
     position: relative;
-    height: 460vh; // krótszy tor = szybsze przejście przez klatki
+    height: 460vh; // shorter track = faster frame playback
 
     &__stage {
         position: sticky;
@@ -44,7 +44,7 @@
     }
 }
 
-// napisy pojawiające się wraz ze scrollem
+// scroll-revealed captions
 .captions {
     position: absolute;
     inset: 0;
@@ -83,7 +83,7 @@
     }
 }
 
-// szachownica na granicy hero / treść
+// checkerboard divider between hero and content
 .checker {
     position: relative;
     z-index: 3;
@@ -94,7 +94,7 @@
     box-shadow: 0 0 26px rgba(0,0,0,.6);
 }
 
-// intro: czarna nakładka na starcie (znika po pierwszym scrollu)
+// intro: black overlay, fades on first scroll
 .veil {
     position: fixed;
     inset: 0;

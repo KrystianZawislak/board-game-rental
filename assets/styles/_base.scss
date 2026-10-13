@@ -12,7 +12,7 @@ html, body {
     -webkit-font-smoothing: antialiased;
 }
 
-// pływający przycisk „Panel" — globalny, tylko dla zalogowanego personelu
+// floating "Panel" button, staff only
 .staff-link {
     position: fixed;
     top: 16px;

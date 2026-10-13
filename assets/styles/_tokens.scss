@@ -1,4 +1,4 @@
-// Tokeny współdzielone przez moduły (@use 'tokens' as *)
+// Shared design tokens (@use 'tokens' as *)
 
 $bg:    #0c0c0c;
 $ink:   #ffffff;
@@ -8,6 +8,6 @@ $serif: "Cormorant Garamond", Georgia, serif;
 $sans:  ui-sans-serif, system-ui, sans-serif;
 $checker: 22px;
 
-// breakpointy (desktop-first → nakładki @media trzymane przy komponentach w modułach)
-$bp-md: 900px;  // tablet / węższy desktop
-$bp-sm: 600px;  // telefon
+// breakpoints (desktop-first; @media overrides live next to each component)
+$bp-md: 900px;  // tablet / narrow desktop
+$bp-sm: 600px;  // phone

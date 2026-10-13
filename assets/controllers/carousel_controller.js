@@ -1,8 +1,8 @@
 import { Controller } from '@hotwired/stimulus';
 
 /**
- * Poziomy pasek kart (wiersz katalogu) ze strzałkami w lewo/prawo.
- * Strzałka chowa się, gdy nie ma już dokąd przewijać w danym kierunku.
+ * Horizontal card row with left/right arrows.
+ * An arrow hides when there's nothing more to scroll in its direction.
  */
 export default class extends Controller {
     static targets = ['track', 'prev', 'next'];
@@ -12,7 +12,7 @@ export default class extends Controller {
         this.trackTarget.addEventListener('scroll', this.refresh, { passive: true });
         window.addEventListener('resize', this.refresh);
         this.updateArrows();
-        this.element.classList.add('is-ready'); // dopiero teraz pokazujemy aktywne strzałki
+        this.element.classList.add('is-ready'); // reveal arrows only once ready
     }
 
     disconnect() {
@@ -28,7 +28,7 @@ export default class extends Controller {
         const card = this.trackTarget.querySelector('.game-card');
         if (!card) return;
 
-        // jedna karta + odstęp (gap) = dokładnie jeden krok
+        // one card + gap = one step
         const styles = getComputedStyle(this.trackTarget);
         const gap = parseFloat(styles.columnGap || styles.gap) || 0;
         const stepPx = card.offsetWidth + gap;

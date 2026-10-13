@@ -22,10 +22,10 @@ final class SecurityHeadersSubscriberTest extends TestCase
 
     public function testCspOnlyInProd(): void
     {
-        // dev/test (debug): CSP wyłączone, bo psułoby inline skrypty profilera
+        // dev/test (debug): no CSP, it would break the profiler's inline scripts
         self::assertNull($this->respondWith(debug: true)->get('Content-Security-Policy'));
 
-        // prod (bez debug): CSP obecne, z twardym frame-ancestors
+        // prod (no debug): CSP present with strict frame-ancestors
         $csp = $this->respondWith(debug: false)->get('Content-Security-Policy');
         self::assertNotNull($csp);
         self::assertStringContainsString("frame-ancestors 'none'", $csp);

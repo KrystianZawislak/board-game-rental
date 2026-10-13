@@ -8,8 +8,8 @@ use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
- * Dokłada nagłówki bezpieczeństwa do każdej odpowiedzi (OWASP A02).
- * CSP tylko na produkcji — w dev psułaby inline'owe skrypty paska web profilera.
+ * Adds security headers to every response (OWASP A02).
+ * CSP is prod-only, since it would break the web profiler's inline scripts in dev.
  */
 final readonly class SecurityHeadersSubscriber implements EventSubscriberInterface
 {
@@ -31,12 +31,12 @@ final readonly class SecurityHeadersSubscriber implements EventSubscriberInterfa
         }
 
         $headers = $event->getResponse()->headers;
-        $headers->set('X-Frame-Options', 'DENY');            // anti-clickjacking (starsze przeglądarki)
-        $headers->set('X-Content-Type-Options', 'nosniff');  // bez zgadywania typu MIME
+        $headers->set('X-Frame-Options', 'DENY');            // anti-clickjacking (legacy browsers)
+        $headers->set('X-Content-Type-Options', 'nosniff');  // no MIME sniffing
         $headers->set('Referrer-Policy', 'same-origin');
 
         if (!$this->debug) {
-            // script/style 'unsafe-inline': AssetMapper renderuje inline importmap; docelowo (prod++) nonce
+            // 'unsafe-inline' is needed for AssetMapper's inline importmap; a nonce would be stricter
             $headers->set('Content-Security-Policy', implode('; ', [
                 "default-src 'self'",
                 "base-uri 'self'",

@@ -3,7 +3,7 @@
 .catalog {
     position: relative;
     z-index: 2;
-    min-height: calc(100vh - #{$checker}); // jeden ekran → szachownica trafia w górę przy dolnym scrollu
+    min-height: calc(100vh - #{$checker}); // one full screen
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -35,7 +35,7 @@
     }
 }
 
-// filtry
+// filters
 .filters {
     display: flex;
     flex-wrap: wrap;
@@ -104,7 +104,7 @@
     }
 }
 
-// płaska siatka wyników (po użyciu filtra)
+// flat results grid (filtered view)
 .games {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -173,25 +173,25 @@
     }
 }
 
-// wiersze „Netflix" — poziomy pasek kart ze strzałkami
+// Netflix-style rows: horizontal card strip with arrows
 .row {
     max-width: 1200px;
     margin: 0 auto 44px;
 
     &__title {
         margin: 0 0 14px;
-        padding-left: 52px; // równo z wciętym torem kart
+        padding-left: 52px; // aligned with the card track
         font-size: clamp(18px, 2.4vmin, 24px);
         font-weight: 500;
     }
     &__viewport {
         position: relative;
-        padding: 0 52px; // rynny po bokach na strzałki (nie nachodzą na karty)
+        padding: 0 52px; // side gutters for the arrows
     }
     &__track {
         display: flex;
         gap: 18px;
-        padding: 10px 0; // miejsce na unoszenie karty przy hover
+        padding: 10px 0; // room for the hover lift
         overflow-x: auto;
         scroll-snap-type: x mandatory;
         scroll-behavior: smooth;
@@ -200,7 +200,7 @@
         &::-webkit-scrollbar { display: none; }
 
         > .game-card {
-            flex: 0 0 calc((100% - 72px) / 5); // równo 5 całych kart (4 odstępy po 18px)
+            flex: 0 0 calc((100% - 72px) / 5); // exactly 5 cards (4 gaps of 18px)
             scroll-snap-align: start;
         }
     }
@@ -221,7 +221,7 @@
         font-size: 20px;
         line-height: 1;
         cursor: pointer;
-        opacity: 0; // ukryte dopóki kontroler nie ożywi wiersza (klasa is-ready)
+        opacity: 0; // hidden until the controller adds .is-ready
         pointer-events: none;
         transition: opacity .2s, background .25s;
 
@@ -236,20 +236,20 @@
     }
 }
 
-// --- responsywność ---
+// --- responsive ---
 
 @media (max-width: $bp-md) {
     .row {
         &__viewport { padding: 0 44px; }
         &__title { padding-left: 44px; }
-        &__track > .game-card { flex: 0 0 calc((100% - 36px) / 3); } // 3 karty w kadrze
+        &__track > .game-card { flex: 0 0 calc((100% - 36px) / 3); } // 3 cards in view
     }
 }
 
 @media (max-width: $bp-sm) {
     .catalog { padding: 7vh 16px; }
 
-    // dokładnie JEDNA karta w kadrze, strzałki w bocznych rynnach
+    // exactly one card in view, arrows in the gutters
     .row {
         margin-bottom: 32px;
 
@@ -261,7 +261,7 @@
         &__track {
             gap: 14px;
 
-            > .game-card { flex: 0 0 100%; } // pełna szerokość → zawsze widać jedną
+            > .game-card { flex: 0 0 100%; }
         }
         &__arrow {
             width: 36px;

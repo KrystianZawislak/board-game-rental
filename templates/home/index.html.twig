@@ -7,7 +7,7 @@
      data-homepage-reveal-end-value="0.12"
      data-homepage-scrim-level-value="0.42">
 
-    {# hero: klatki sterowane scrollem + napisy #}
+    {# hero: scroll-driven frames + captions #}
     <div class="hero" data-homepage-target="track">
         <div class="hero__stage">
             <canvas class="hero__canvas" data-homepage-target="canvas"></canvas>
@@ -36,7 +36,7 @@
 
     <div class="checker" aria-hidden="true"></div>
 
-    {# katalog — wiersze wg kategorii; filtrowanie w miejscu (JS), wyniki renderują się pod filtrami #}
+    {# catalog: rows by category, filtered client-side #}
     <section class="catalog" id="catalog" data-controller="catalog">
         <header class="catalog__head">
             <span class="catalog__kicker">Katalog</span>
@@ -45,7 +45,7 @@
 
         {{ include('home/_filters.html.twig') }}
 
-        {# domyślny widok: wiersze „Netflix" #}
+        {# default view: Netflix-style rows #}
         <div class="catalog__rows" data-catalog-target="rows">
             {% for row in rows %}
                 <div class="row" data-controller="carousel">
@@ -65,12 +65,12 @@
             {% endfor %}
         </div>
 
-        {# widok po filtrze: płaska siatka pasujących gier (wypełniana przez JS) #}
+        {# filtered view: flat grid filled by JS #}
         <div class="games" data-catalog-target="results" hidden></div>
         <p class="catalog__empty" data-catalog-target="empty" hidden>Brak gier spełniających wybrane kryteria.</p>
     </section>
 
-    {# intro: czarna nakładka na starcie #}
+    {# intro: black overlay #}
     <div class="veil" data-homepage-target="veil">
         <div class="veil__brand" data-homepage-target="introBrand">
             <div class="veil__word">PIONEK</div>

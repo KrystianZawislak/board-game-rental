@@ -2,7 +2,7 @@
 
 A board game rental MVP. It has a public catalog with client-side filtering, guest reservations and a staff panel for managing games and the reservation lifecycle. The UI is in Polish.
 
-**Stack:** PHP 8.2+, Symfony 7.4, Twig, Stimulus, SCSS, Doctrine, MySQL
+**Stack:** PHP 8.2.35+, 8.3.36+, 8.4.27+ or 8.5.12+, Symfony 7.4, Twig, Stimulus, SCSS, Doctrine, MySQL
 
 ## Features
 
